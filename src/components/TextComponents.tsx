@@ -1,11 +1,12 @@
 interface IDescriptionText {
-    text?: string;
+    text: string;
+    className?: string;
 }
 
-const TextComponents = ({text}: Readonly<IDescriptionText>) => {
+const TextComponents = ({text, className}: Readonly<IDescriptionText>) => {
   return (
     <div>
-        <div className="p-4 text-justify">
+        <div className={`p-4 text-justify ${className}`}>
             <p>{text}</p>
         </div>
     </div>
