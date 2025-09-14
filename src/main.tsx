@@ -1,7 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './assets/css/style.css'
-import LoginForm from './pages/Login'
+import RouterConfig from './config/router.config'
+// import LoginForm from './pages/Login'
 // import App from './App'
 
 
@@ -9,6 +10,7 @@ import LoginForm from './pages/Login'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {/* <App /> */}
-    <LoginForm />
+    {/* <LoginForm /> */}
+    <RouterConfig />
   </StrictMode>,
 )

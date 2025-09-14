@@ -12,14 +12,17 @@ export default function LoginForm() {
         password: ''
     });
 
+    // without argument
     useEffect(() => {
         console.log("It is always called");
     })
 
+    // with empty argument
     useEffect(() => {
         console.log("It is called only once");
     }, [])
 
+    // with argument
     useEffect(() => {
        console.log("called when data state is changes");
     }, [data])
