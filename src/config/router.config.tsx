@@ -1,6 +1,7 @@
 // import {BrowserRouter, Route, Routes} from 'react-router'
 import { BrowserRouter, createBrowserRouter, RouterProvider } from 'react-router';
 import LoginForm from '../pages/Login';
+import PageNotFound from '../pages/PageNotFound';
 
 
 const RoutConfig = createBrowserRouter([
@@ -11,6 +12,11 @@ const RoutConfig = createBrowserRouter([
     {
         path: '/login',
         element: <LoginForm />
+    },
+    {
+        // page not found
+        path: '*',
+        element: <PageNotFound />
     }
 ]);
 
