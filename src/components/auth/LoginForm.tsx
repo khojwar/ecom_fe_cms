@@ -1,44 +1,16 @@
-import { use, useEffect, useState } from "react";
-
-export default function LoginForm() {
-
-    interface ICridentials {
-        email: string;
-        password: string;
-    }
-
-    const [data, setData] = useState<ICridentials>({
-        email: '',
-        password: ''
-    });
-
-    // without argument
-    useEffect(() => {
-        console.log("It is always called");
-    })
-
-    // with empty argument
-    useEffect(() => {
-        console.log("It is called only once");
-    }, [])
-
-    // with argument
-    useEffect(() => {
-       console.log("called when data state is changes");
-    }, [data])
 
 
+const LoginForm = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+    <div>
+        <h2 className="text-2xl font-bold text-teal-900 shadow-2xl text-center mb-6">Login</h2>
 
         <form className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
               type="email"
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter your email"
               required
             />
@@ -48,7 +20,7 @@ export default function LoginForm() {
             <label className="block text-sm font-medium mb-1">Password</label>
             <input
               type="password"
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter your password"
               required
             />
@@ -63,14 +35,14 @@ export default function LoginForm() {
           <div className="flex justify-between space-x-2">
             <button
               type="submit"
-              className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+              className="flex-1 bg-teal-900 text-white py-2 rounded-lg hover:bg-teal-950"
             >
               Login
             </button>
 
             <button
               type="button"
-              className="flex-1 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600"
+              className="flex-1 bg-red-900 text-white py-2 rounded-lg hover:bg-red-950"
             >
               Cancel
             </button>
@@ -87,7 +59,9 @@ export default function LoginForm() {
             Register
           </a>
         </p>
-      </div>
+
     </div>
-  );
+  )
 }
+
+export default LoginForm

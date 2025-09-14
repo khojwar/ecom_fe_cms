@@ -19,20 +19,13 @@ const ActivateUser = () => {
     }, [])
 
     return (
-        <div>
+        <div className="text-center">
+            <h2>Activate User Page</h2>
+            <p>Query Param - ref: <span className="font-bold">{searchParams.get('name')?.toUpperCase()}</span></p>
 
-            <div className="flex items-center justify-center min-h-screen w-full bg-gray-100">
-                <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8 text-center">
-                    <h2>Activate User Page</h2>
-                    <p>Query Param - ref: <span className="font-bold">{searchParams.get('name')?.toUpperCase()}</span></p>
-
-                    {
-                        loading ? <p> <Spinner /></p> : <p>{params.token}</p>
-                    }
-                </div>
-            </div>
-
-
+            {
+                loading ? <p> <Spinner /></p> : <p>{params.token}</p>
+            }
         </div>
     )
 }
