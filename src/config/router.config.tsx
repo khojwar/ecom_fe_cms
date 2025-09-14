@@ -2,6 +2,7 @@
 import { BrowserRouter, createBrowserRouter, RouterProvider } from 'react-router';
 import LoginForm from '../pages/Login';
 import PageNotFound from '../pages/PageNotFound';
+import ActivateUser from '../pages/auth/ActivateUser';
 
 
 const RoutConfig = createBrowserRouter([
@@ -12,6 +13,11 @@ const RoutConfig = createBrowserRouter([
     {
         path: '/login',
         element: <LoginForm />
+    },
+    {
+        // parameterized route
+        path: '/activate/:token',
+        element: <ActivateUser />
     },
     {
         // page not found
