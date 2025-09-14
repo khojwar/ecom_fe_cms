@@ -1,13 +1,35 @@
-import {BrowserRouter, Route, Routes} from 'react-router'
+// import {BrowserRouter, Route, Routes} from 'react-router'
+import { BrowserRouter, createBrowserRouter, RouterProvider } from 'react-router';
 import LoginForm from '../pages/Login';
+
+
+const RoutConfig = createBrowserRouter([
+    {
+        path: '/',
+        element: <LoginForm />
+    },
+    {
+        path: '/login',
+        element: <LoginForm />
+    }
+]);
+
 
 const RouterConfig = () => {
     return (
+
+        <> 
+        <RouterProvider router={RoutConfig} />
+
+        {/* 
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<LoginForm />} />
-            </Routes>
-        </BrowserRouter>
+           </Routes>
+        </BrowserRouter> 
+        */}
+
+        </>
     )
 }
 
