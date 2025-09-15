@@ -12,3 +12,18 @@ export const AdminMenu = [
             { key: "8", icon: <SwapOutlined />, label: "Transactions" },
             { key: "9", icon: <MessageOutlined />, label: "Chat" },
           ];
+
+export const SellerMenu = [
+        { key: "1", icon: <AppstoreOutlined />, label: "DashBoard" },
+        { key: "2", icon: <ShoppingOutlined />, label: "Products" },
+        { key: "3", icon: <ProfileOutlined />, label: "Orders" },
+        { key: "4", icon: <MessageOutlined />, label: "Chat" },
+        ];
+
+
+
+export interface ImenuItems {
+  key: string;
+  icon?: React.ReactNode;
+  label?: string;
+}

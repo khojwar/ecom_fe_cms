@@ -1,19 +1,15 @@
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-} from "@ant-design/icons";
-import { Button, Layout, Menu, theme } from "antd";
+
+import {  Layout, theme } from "antd";
 import { useState } from "react";
 import { Outlet } from "react-router";
+import Sidebar from "../../components/sidebar/Sidebar";
+import type { ImenuItems } from "../../config/menu-items";
+import UserHeader from "../../components/header/Header";
 
 
-const { Header, Sider, Content } = Layout;
+const { Content } = Layout;
 
-const UserLayout = ({menu, sTitle, lTitle} : Readonly<{menu: Array<{
-    key: string;
-    icon: React.ReactNode;
-    label: string;
-}>, sTitle: string; lTitle: string; }>) => {
+const UserLayout = ({menu, sTitle, lTitle} : Readonly<{menu: Array<ImenuItems>, sTitle: string; lTitle: string; }>) => {
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -22,37 +18,12 @@ const UserLayout = ({menu, sTitle, lTitle} : Readonly<{menu: Array<{
   return (
     <Layout className="h-screen">
       {/* Sidebar */}
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        {/* Sidebar Header */}
-        <div className="flex items-center justify-center h-16 bg-gray-800 mb-4 transition-all duration-300">
-          <p
-            className={`text-white font-bold hover:cursor-pointer shadow-2xl transition-all duration-300 ${
-              collapsed ? "text-lg" : "text-2xl"
-            }`}
-          >
-            {collapsed ? sTitle : lTitle}
-          </p>
-        </div>
-
-        {/* Sidebar Menu */}
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          items={menu}
-        />
-      </Sider>
+      <Sidebar collapsed={collapsed} sTitle={sTitle} lTitle={lTitle} menu={menu} />
 
       {/* Main Layout */}
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{ fontSize: "16px", width: 64, height: 64 }}
-          />
-        </Header>
+        <UserHeader collapsed={collapsed} setCollapsed={setCollapsed} colorBgContainer={colorBgContainer} />
+
 
         <Content
           style={{
