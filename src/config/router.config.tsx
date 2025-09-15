@@ -6,6 +6,8 @@ import AuthLayout from '../pages/layout/AuthLayout';
 import LoginForm from '../components/auth/LoginForm';
 import RegisterForm from '../components/auth/RegisterForm';
 import ForgotPasswordForm from '../components/auth/ForgotPasswordForm';
+import { AdminMenu } from './menu-items';
+import UserLayout from '../pages/layout/UserLayout';
 
 
 
@@ -32,6 +34,10 @@ const RoutConfig = createBrowserRouter([
                 element: <ActivateUser />
             }
         ]
+    },
+    {
+        path: '/admin',
+        element: <UserLayout menu={AdminMenu} sTitle={"ADM"} lTitle={"Admin Panel"} />
     },
     {
         // page not found
