@@ -15,18 +15,22 @@ const LoginForm = () => {
   });
 
   const handleChange = (e: React.BaseSyntheticEvent) => {
-    e.preventDefault();
     // console.log(e.target.value);
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   }
 
-  console.log(credentials);
+
+  const handleSubmit = (e: React.BaseSyntheticEvent) => {
+    e.preventDefault();
+    console.log('Submitted credentials:', credentials);
+    // Add your login logic here
+  }
   
 
   return (
     <div>
         <h2 className="text-2xl font-bold text-teal-900 shadow-2xl text-center mb-6">Login</h2>
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="mb-4 flex items-center">
             <label className="block text-sm font-medium mb-1 w-1/4">Email</label>
             <Input
@@ -58,12 +62,11 @@ const LoginForm = () => {
           </div>
 
           <div className="flex justify-between space-x-2">
-            <Button type="primary" className="flex-1! bg-teal-900! text-white! py-4! rounded-lg! hover:bg-teal-950!">
-                Login
-            </Button>
-
-            <Button type="primary" className="flex-1! bg-red-900! text-white! py-4! rounded-lg! hover:bg-red-950!">
+            <Button type="primary"  htmlType="submit"  className="flex-1! bg-red-900! text-white! py-4! rounded-lg! hover:bg-red-950!">
                 Cancel
+            </Button>
+            <Button type="primary" htmlType="submit" className="flex-1! bg-teal-900! text-white! py-4! rounded-lg! hover:bg-teal-950!">
+                Login
             </Button>
           </div>
         </form>
