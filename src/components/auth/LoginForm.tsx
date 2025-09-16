@@ -1,6 +1,7 @@
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Input } from 'antd';
 import { Controller, useForm} from 'react-hook-form';
+import FormInput from '../form/FormInput';
 
 
   interface ICredentials {
@@ -36,26 +37,12 @@ const LoginForm = () => {
           <div className="mb-4 flex items-center">
             <label className="block text-sm font-medium mb-1 w-1/4">Email</label>
               <div className='w-3/4 flex flex-col'>
-                <Controller
-                  name="email"
-                  control={control}
-                  rules={{ required: "Email is required" }}
-                  render={({ field }) => (
-                    <div>
-                      <Input
-                        type="email"
-                        className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                        placeholder="Enter your email"
-                        {...field}   // <-- use field here
-                      />
-                      {errors.email && (
-                        <p className="text-red-500 text-sm ml-4 italic">
-                          {errors.email.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                />
+                <FormInput control={control} name="email" />
+                {errors.email && (
+                  <p className="text-red-500 text-sm ml-4 italic">
+                    {errors.email.message}
+                  </p>
+                )}
             </div>
           </div>
 
@@ -69,6 +56,7 @@ const LoginForm = () => {
                 render={({ field }) => (
                   <div>
                     <Input.Password
+                    id='password'
                     placeholder="input password"
                     className=" px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 "
                     iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
