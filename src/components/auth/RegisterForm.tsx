@@ -1,55 +1,65 @@
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { Button, Input } from "antd";
+
 const RegisterForm = () => {
   return (
     <div>
       <h2 className="text-2xl text-teal-900 shadow-2xl font-bold text-center mb-6">Register</h2>
 
       <form className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Name</label>
-          <input
+        <div className="flex items-center">
+          <label className="block text-sm font-medium mb-1 w-1/4">Name</label>
+          {/* antd Input component for name */}
+          <Input 
             type="text"
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
             placeholder="Enter your name"
             required
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
-          <input
+        <div className="flex items-center">
+          <label className="block text-sm font-medium mb-1 w-1/4">Email</label>
+          {/* antd Input component for email */}
+          <Input
             type="email"
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
             placeholder="Enter your email"
             required
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Password</label>
-          <input
-            type="password"
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-            placeholder="Enter your password"
+        <div className="flex items-center">
+          <label className="block text-sm font-medium mb-1 w-1/4">Password</label>
+          {/* antd Input component for password */}
+          <Input.Password
+            placeholder="input password"
             required
+            className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Confirm Password</label>
-          <input
-            type="password"
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-            placeholder="Confirm your password"
+        <div className="flex items-center">
+          <label className="block text-sm font-medium mb-1 w-1/4">Confirm Password</label>
+          {/* antd Input component for confirm password */}
+          <Input.Password
+            placeholder="input password"
             required
+            className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-teal-900 text-white py-2 rounded-lg hover:bg-teal-950"
+        {/* antd submit button */}
+        <Button
+          type="primary"
+          htmlType="submit"
+          className="w-full bg-teal-900! text-white! py-2! rounded-lg! hover:bg-teal-950!"
         >
           Register
-        </button>
+        </Button>
+        
       </form>
 
       <div className="flex items-center my-6">
