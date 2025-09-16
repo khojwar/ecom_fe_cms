@@ -1,58 +1,84 @@
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Input } from 'antd';
-import React, { useState } from 'react';
+import { Controller, useForm} from 'react-hook-form';
 
-const LoginForm = () => {
 
   interface ICredentials {
     email: string;
     password: string;
   }
 
-  const [credentials, setCredentials] = useState<ICredentials>({ 
-    email: '', 
-    password: '' 
-  });
 
-  const handleChange = (e: React.BaseSyntheticEvent) => {
-    // console.log(e.target.value);
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+const LoginForm = () => {
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<ICredentials>({
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  })
+
+  const onSubmit = (credentials: ICredentials) => {
+    console.log("Form Submitted: ", credentials);
   }
 
-
-  const handleSubmit = (e: React.BaseSyntheticEvent) => {
-    e.preventDefault();
-    console.log('Submitted credentials:', credentials);
-    // Add your login logic here
-  }
+  // console.log(errors);
   
 
   return (
     <div>
         <h2 className="text-2xl font-bold text-teal-900 shadow-2xl text-center mb-6">Login</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="mb-4 flex items-center">
             <label className="block text-sm font-medium mb-1 w-1/4">Email</label>
-            <Input
-              type="email"
-              className=" px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 w-3/4"
-              placeholder="Enter your email"
-              required
-              name='email'
-              onChange={handleChange}
-            />
+              <div className='w-3/4 flex flex-col'>
+                <Controller
+                  name="email"
+                  control={control}
+                  rules={{ required: "Email is required" }}
+                  render={({ field }) => (
+                    <div>
+                      <Input
+                        type="email"
+                        className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        placeholder="Enter your email"
+                        {...field}   // <-- use field here
+                      />
+                      {errors.email && (
+                        <p className="text-red-500 text-sm ml-4 italic">
+                          {errors.email.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
+            </div>
           </div>
 
           <div className="mb-4 flex items-center">
             <label className="block text-sm font-medium mb-1 w-1/4">Password</label>
-            <Input.Password
-              placeholder="input password"
-              required
-              name='password'
-              onChange={handleChange}
-              className=" px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 w-3/4"
-              iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-            />
+            <div className='w-3/4 flex flex-col'>
+              <Controller 
+                name="password"
+                control={control}
+                rules={{ required: "Password is required" }}
+                render={({ field }) => (
+                  <div>
+                    <Input.Password
+                    placeholder="input password"
+                    className=" px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 "
+                    iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                    {...field}   // <-- use field here
+                  />  
+                  {errors.password && (<div className="text-red-500 text-sm ml-4 italic">{errors.password.message}</div>)}
+                  </div>
+                )}
+              />  
+            </div>
           </div>
 
           <div className="text-right">
