@@ -12,11 +12,11 @@ const FormInput = ({control, name}: Readonly<IEmailInputProps>) => {
         <Controller
             name={name}
             control={control}
-            rules={{ required: "Email is required" }}
+            rules={{ required: true }}
             render={({ field }) => (
             <div>
                 <Input
-                type="email"
+                type={name}
                 id={name}
                 className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 placeholder={`Enter your ${name}`}

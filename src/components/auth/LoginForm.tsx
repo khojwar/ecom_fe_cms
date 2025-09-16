@@ -2,6 +2,9 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Input } from 'antd';
 import { Controller, useForm} from 'react-hook-form';
 import FormInput from '../form/FormInput';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import type Password from 'antd/es/input/Password';
 
 
   interface ICredentials {
@@ -9,18 +12,20 @@ import FormInput from '../form/FormInput';
     password: string;
   }
 
+  const credentialsDTO = yup.object().shape({
+    email: yup.string().email().required(),
+    password: yup.string().min(6).required(),
+  })
+
 
 const LoginForm = () => {
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<ICredentials>({
+  const { handleSubmit, control, formState: { errors } } = useForm<ICredentials>({
     defaultValues: {
       email: '',
       password: ''
-    }
+    }, 
+    resolver: yupResolver(credentialsDTO)
   })
 
   const onSubmit = (credentials: ICredentials) => {
@@ -40,7 +45,7 @@ const LoginForm = () => {
                 <FormInput control={control} name="email" />
                 {errors.email && (
                   <p className="text-red-500 text-sm ml-4 italic">
-                    {errors.email.message}
+                    {errors.email?.message}
                   </p>
                 )}
             </div>
@@ -52,7 +57,7 @@ const LoginForm = () => {
               <Controller 
                 name="password"
                 control={control}
-                rules={{ required: "Password is required" }}
+                rules={{ required: true }}
                 render={({ field }) => (
                   <div>
                     <Input.Password
@@ -62,7 +67,7 @@ const LoginForm = () => {
                     iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                     {...field}   // <-- use field here
                   />  
-                  {errors.password && (<div className="text-red-500 text-sm ml-4 italic">{errors.password.message}</div>)}
+                  {errors.password && (<div className="text-red-500 text-sm ml-4 italic">{errors.password?.message}</div>)}
                   </div>
                 )}
               />  
