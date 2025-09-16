@@ -2,6 +2,8 @@ import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { Button, Input } from "antd";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import FormInput from "../form/FormInput";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 interface IFormInput {
   name: string;
@@ -10,14 +12,24 @@ interface IFormInput {
   confirmPassword: string;
 }
 
+const schema = yup.object() .shape({
+    name: yup.string().required(),
+    email: yup.string().email().required(),
+    password: yup.string().min(6).required(),
+    confirmPassword: yup.string().nullable().oneOf([yup.ref('password'), null], 'Passwords must match').required(),
+  })
+
+
+
 const RegisterForm = () => {
-  const { control, handleSubmit } = useForm<IFormInput>({
+  const { control, handleSubmit, formState: { errors } } = useForm<IFormInput>({
     defaultValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
+    resolver: yupResolver(schema),
   });
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
@@ -40,6 +52,7 @@ const RegisterForm = () => {
           <label className="block text-sm font-medium mb-1 w-1/4">Name</label>
           <div className="w-3/4">
             <FormInput control={control} name="name" />
+            {errors.name && (<div className="text-red-500 text-sm ml-4 italic">{errors.name?.message}</div>)}
           </div>
         </div>
 
@@ -48,6 +61,7 @@ const RegisterForm = () => {
           <label className="block text-sm font-medium mb-1 w-1/4">Email</label>
           <div className="w-3/4">
             <FormInput control={control} name="email" />
+            {errors.email && (<div className="text-red-500 text-sm ml-4 italic">{errors.email?.message}</div>)}
           </div>
         </div>
 
@@ -57,22 +71,24 @@ const RegisterForm = () => {
             Password
           </label>
           <div className="w-3/4">
-            <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <Input.Password
-                  placeholder="Enter password"
-                  id="password"
-                  required
-                  className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                  }
-                  {...field}
+              <div className="flex flex-col">
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <Input.Password
+                      placeholder="Enter password"
+                      id="password"
+                      className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      iconRender={(visible) =>
+                        visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                      }
+                      {...field}
+                    />
+                  )}
                 />
-              )}
-            />
+                {errors.password && (<div className="text-red-500 text-sm ml-4 italic">{errors.password?.message}</div>)}
+              </div>
           </div>
         </div>
 
@@ -82,22 +98,24 @@ const RegisterForm = () => {
             Confirm Password
           </label>
           <div className="w-3/4">
-            <Controller
-              name="confirmPassword"
-              control={control}
-              render={({ field }) => (
-                <Input.Password
-                  placeholder="Confirm password"
-                  id="confirmPassword"
-                  required
-                  className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                  }
-                  {...field}
+              <div className="flex flex-col">
+                <Controller
+                  name="confirmPassword"
+                  control={control}
+                  render={({ field }) => (
+                    <Input.Password
+                      placeholder="Confirm password"
+                      id="confirmPassword"
+                      className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      iconRender={(visible) =>
+                        visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                      }
+                      {...field}
+                    />
+                  )}
                 />
-              )}
-            />
+                {errors.confirmPassword && (<div className="text-red-500 text-sm ml-4 italic">{errors.confirmPassword?.message}</div>)}
+              </div>
           </div>
         </div>
 

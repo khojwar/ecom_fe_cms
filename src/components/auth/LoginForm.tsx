@@ -4,7 +4,6 @@ import { Controller, useForm} from 'react-hook-form';
 import FormInput from '../form/FormInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import type Password from 'antd/es/input/Password';
 
 
   interface ICredentials {
