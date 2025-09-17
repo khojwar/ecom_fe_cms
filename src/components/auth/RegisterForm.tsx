@@ -1,43 +1,71 @@
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { Button, Input } from "antd";
+import { Button, Input, Select, DatePicker, Radio } from "antd";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import FormInput from "../form/FormInput";
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import dayjs from "dayjs";
+import { Link } from "react-router";
 
 interface IFormInput {
   name: string;
   email: string;
   password: string;
   confirmPassword: string;
+  role: string;
+  gender: string;
+  phone: string;
+  address: {
+    billingAddress: string;
+    shippingAddress: string;
+  };
+  dob: string;
 }
 
-const schema = yup.object() .shape({
-    name: yup.string().required(),
-    email: yup.string().email().required(),
-    password: yup.string().min(6).required(),
-    confirmPassword: yup.string().nullable().oneOf([yup.ref('password'), null], 'Passwords must match').required(),
-  })
-
-
+const schema = yup.object().shape({
+  name: yup.string().required("Name is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup.string().min(6, "Password must be at least 6 characters").required(),
+  confirmPassword: yup
+    .string()
+    .nullable()
+    .oneOf([yup.ref("password"), null], "Passwords must match")
+    .required("Confirm password is required"),
+  role: yup.string().required("Role is required"),
+  gender: yup.string().required("Gender is required"),
+  phone: yup.string().matches(/^\d{10}$/, "Phone must be 10 digits").required(),
+  address: yup.object({
+    billingAddress: yup.string().required("Billing address required"),
+    shippingAddress: yup.string().required("Shipping address required"),
+  }),
+  dob: yup.string().required("Date of Birth is required"),
+});
 
 const RegisterForm = () => {
-  const { control, handleSubmit, formState: { errors } } = useForm<IFormInput>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormInput>({
     defaultValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
+      role: "",
+      gender: "",
+      phone: "",
+      address: {
+        billingAddress: "",
+        shippingAddress: "",
+      },
+      dob: "",
     },
     resolver: yupResolver(schema),
   });
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    if (data.password !== data.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-    console.log(data);
+    console.log("Form submitted:", data);
   };
 
   return (
@@ -52,7 +80,7 @@ const RegisterForm = () => {
           <label className="block text-sm font-medium mb-1 w-1/4">Name</label>
           <div className="w-3/4">
             <FormInput control={control} name="name" />
-            {errors.name && (<div className="text-red-500 text-sm ml-4 italic">{errors.name?.message}</div>)}
+            {errors.name && <div className="text-red-500 text-sm ml-4 italic">{errors.name.message}</div>}
           </div>
         </div>
 
@@ -61,61 +89,133 @@ const RegisterForm = () => {
           <label className="block text-sm font-medium mb-1 w-1/4">Email</label>
           <div className="w-3/4">
             <FormInput control={control} name="email" />
-            {errors.email && (<div className="text-red-500 text-sm ml-4 italic">{errors.email?.message}</div>)}
+            {errors.email && <div className="text-red-500 text-sm ml-4 italic">{errors.email.message}</div>}
           </div>
         </div>
 
         {/* Password */}
         <div className="flex items-center">
-          <label className="block text-sm font-medium mb-1 w-1/4">
-            Password
-          </label>
+          <label className="block text-sm font-medium mb-1 w-1/4">Password</label>
           <div className="w-3/4">
-              <div className="flex flex-col">
-                <Controller
-                  name="password"
-                  control={control}
-                  render={({ field }) => (
-                    <Input.Password
-                      placeholder="Enter password"
-                      id="password"
-                      className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                      iconRender={(visible) =>
-                        visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                      }
-                      {...field}
-                    />
-                  )}
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <Input.Password
+                  placeholder="Enter password"
+                  id="password"
+                  className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                  {...field}
                 />
-                {errors.password && (<div className="text-red-500 text-sm ml-4 italic">{errors.password?.message}</div>)}
-              </div>
+              )}
+            />
+            {errors.password && <div className="text-red-500 text-sm ml-4 italic">{errors.password.message}</div>}
           </div>
         </div>
 
         {/* Confirm Password */}
         <div className="flex items-center">
-          <label className="block text-sm font-medium mb-1 w-1/4">
-            Confirm Password
-          </label>
+          <label className="block text-sm font-medium mb-1 w-1/4">Confirm Password</label>
           <div className="w-3/4">
-              <div className="flex flex-col">
-                <Controller
-                  name="confirmPassword"
-                  control={control}
-                  render={({ field }) => (
-                    <Input.Password
-                      placeholder="Confirm password"
-                      id="confirmPassword"
-                      className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                      iconRender={(visible) =>
-                        visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                      }
-                      {...field}
-                    />
-                  )}
+            <Controller
+              name="confirmPassword"
+              control={control}
+              render={({ field }) => (
+                <Input.Password
+                  placeholder="Confirm password"
+                  id="confirmPassword"
+                  className="w-3/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                  {...field}
                 />
-                {errors.confirmPassword && (<div className="text-red-500 text-sm ml-4 italic">{errors.confirmPassword?.message}</div>)}
-              </div>
+              )}
+            />
+            {errors.confirmPassword && <div className="text-red-500 text-sm ml-4 italic">{errors.confirmPassword.message}</div>}
+          </div>
+        </div>
+
+        {/* Role */}
+        <div className="flex items-center">
+          <label className="block text-sm font-medium mb-1 w-1/4">Role</label>
+          <div className="w-3/4">
+            <Controller
+              name="role"
+              control={control}
+              render={({ field }) => (
+                <Select {...field} className="w-3/4">
+                  <Select.Option value="customer">Customer</Select.Option>
+                  <Select.Option value="admin">Admin</Select.Option>
+                </Select>
+              )}
+            />
+            {errors.role && <div className="text-red-500 text-sm ml-4 italic">{errors.role.message}</div>}
+          </div>
+        </div>
+
+        {/* Gender */}
+        <div className="flex items-center">
+          <label className="block text-sm font-medium mb-1 w-1/4">Gender</label>
+          <div className="w-3/4">
+            <Controller
+              name="gender"
+              control={control}
+              render={({ field }) => (
+                <Radio.Group {...field}>
+                  <Radio value="male">Male</Radio>
+                  <Radio value="female">Female</Radio>
+                </Radio.Group>
+              )}
+            />
+            {errors.gender && <div className="text-red-500 text-sm ml-4 italic">{errors.gender.message}</div>}
+          </div>
+        </div>
+
+        {/* Phone */}
+        <div className="flex items-center">
+          <label className="block text-sm font-medium mb-1 w-1/4">Phone</label>
+          <div className="w-3/4">
+            <FormInput control={control} name="phone" />
+            {errors.phone && <div className="text-red-500 text-sm ml-4 italic">{errors.phone.message}</div>}
+          </div>
+        </div>
+
+        {/* Billing Address */}
+        <div className="flex items-center">
+          <label className="block text-sm font-medium mb-1 w-1/4">Billing Address</label>
+          <div className="w-3/4">
+            <FormInput control={control} name="address.billingAddress" />
+            {errors.address?.billingAddress && <div className="text-red-500 text-sm ml-4 italic">{errors.address.billingAddress.message}</div>}
+          </div>
+        </div>
+
+        {/* Shipping Address */}
+        <div className="flex items-center">
+          <label className="block text-sm font-medium mb-1 w-1/4">Shipping Address</label>
+          <div className="w-3/4">
+            <FormInput control={control} name="address.shippingAddress" />
+            {errors.address?.shippingAddress && <div className="text-red-500 text-sm ml-4 italic">{errors.address.shippingAddress.message}</div>}
+          </div>
+        </div>
+
+        {/* DOB */}
+        <div className="flex items-center">
+          <label className="block text-sm font-medium mb-1 w-1/4">DOB</label>
+          <div className="w-3/4">
+            <Controller
+              name="dob"
+              control={control}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  className="w-3/4"
+                  format="YYYY-MM-DD"
+                  value={field.value ? dayjs(field.value) : null}
+                  onChange={(date, dateString) => field.onChange(dateString)}
+                />
+              )}
+            />
+            {errors.dob && <div className="text-red-500 text-sm ml-4 italic">{errors.dob.message}</div>}
           </div>
         </div>
 
@@ -135,9 +235,9 @@ const RegisterForm = () => {
 
       <p className="text-center text-sm">
         Already have an account?{" "}
-        <a href="/login" className="text-blue-600 hover:underline">
+        <Link to="/" className="text-blue-600 hover:underline">
           Login
-        </a>
+        </Link>
       </p>
     </div>
   );

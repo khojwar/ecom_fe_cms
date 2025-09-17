@@ -3,18 +3,9 @@ import { Button, Input } from 'antd';
 import { Controller, useForm} from 'react-hook-form';
 import FormInput from '../form/FormInput';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-
-
-  interface ICredentials {
-    email: string;
-    password: string;
-  }
-
-  const credentialsDTO = yup.object().shape({
-    email: yup.string().email().required(),
-    password: yup.string().min(6).required(),
-  })
+import { type ICredentials, credentialsDTO } from './contract';
+import { Link } from 'react-router';
+import AuthSvc from '../../services/auth.service';
 
 
 const LoginForm = () => {
@@ -27,8 +18,15 @@ const LoginForm = () => {
     resolver: yupResolver(credentialsDTO)
   })
 
-  const onSubmit = (credentials: ICredentials) => {
-    console.log("Form Submitted: ", credentials);
+  const onSubmit = async (credentials: ICredentials) => {
+    try {
+      const response = await AuthSvc.postRequest('/auth/login', credentials);
+      console.log(response);
+
+    } catch (exception) {
+      // handle
+      console.error("Login failed:", exception);
+    }
   }
 
   // console.log(errors);
@@ -94,9 +92,9 @@ const LoginForm = () => {
         </div>
         <p className="text-center text-sm">
           Don’t have an account?{" "}
-          <a href="#" className="text-blue-600 hover:underline">
+          <Link to="/register" className="text-blue-600 hover:underline">
             Register
-          </a>
+          </Link>
         </p>
 
     </div>

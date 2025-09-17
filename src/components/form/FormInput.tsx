@@ -1,9 +1,21 @@
-import { Input } from "antd"
-import { Controller } from "react-hook-form"
+import { Input, Select } from "antd"
+import { Controller, useController } from "react-hook-form"
 
 export interface IEmailInputProps {
     control: any; // Replace 'any' with the actual type from react-hook-form if available
     name: string;
+}
+
+export interface ISelectsOptionsProps {
+  control: any;
+  name: string;
+  errMsg?: string;
+  options: Array<ISingleSelectOption>;
+}
+
+export interface ISingleSelectOption {
+  label: "";
+  value: "";
 }
 
 const FormInput = ({control, name}: Readonly<IEmailInputProps>) => {
@@ -30,3 +42,37 @@ const FormInput = ({control, name}: Readonly<IEmailInputProps>) => {
 }
 
 export default FormInput
+
+
+// For future reusable input components
+
+// export const emailInput = () => {}
+
+// export const passwordInput = () => {}
+
+// export const SelectsOptionsFields = ({ control, name, errMsg='', options }: ISelectsOptionsProps) => {
+//   const {field} = useController({
+//     name: name,
+//     control: control
+//   })
+
+//   const onSearch = (value: string) => {
+//     console.log('search:', value);
+//   };
+
+//   return (
+//     <div>
+//       <Select
+//         {...field}
+//         showSearch
+//         placeholder="Select any one"
+//         optionFilterProp="label"
+//         onSearch={onSearch}
+//         options={options}
+//       />
+      
+//       {errMsg && <div className="text-red-500 text-sm ml-4 italic">{errMsg}</div>}
+//     </div>
+//   );
+// }
+
