@@ -5,7 +5,8 @@ import FormInput from "../form/FormInput";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Link } from "react-router";
-import { axiosInstance } from "../../config/axios.config";
+import { axiosInstance, type SuccessResponse } from "../../config/axios.config";
+import { toast } from "sonner";
 
 interface IFormInput {
   name: string;
@@ -66,17 +67,21 @@ const RegisterForm = () => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      });
+      }) as SuccessResponse;
 
-      console.log("Registration successful:", response.data);
+      console.log("Registration successful:", response.message);
+      toast.success(response.message);
       
     } catch (exception: any) {
       if (exception.error) {
         Object.keys(exception.error).map((field) => {
-          console.log(`Error message: ${exception.error[field]}`);
+          // console.log(`Error message: ${exception.error[field]}`);
           setError(field as keyof IFormInput, { message: exception.error[field] });
-        })
+        });
       }
+      toast.error("Sorry! Registration failed. Please try again.", {
+        description: exception.message,
+      });
     }
   };
 

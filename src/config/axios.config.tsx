@@ -22,10 +22,17 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+export interface SuccessResponse {
+  data: any;
+  message: string;
+  status: string;
+  options: any;
+}
+
 // Response Interceptor (handle errors globally)
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
-    return response.data;
+    return response.data as AxiosResponse;
   },
   (exception: AxiosError) => {
     if (exception.response) {

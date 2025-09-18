@@ -8,6 +8,7 @@ import RegisterForm from '../components/auth/RegisterForm';
 import ForgotPasswordForm from '../components/auth/ForgotPasswordForm';
 import { AdminMenu, SellerMenu } from './menu-items';
 import UserLayout from '../pages/layout/UserLayout';
+import { Toaster} from 'sonner';
 
 
 
@@ -26,7 +27,7 @@ const RoutConfig = createBrowserRouter([
             },
             {
                 path: 'forget-password',
-                element: <ForgotPasswordForm />
+                element: <ForgotPasswordForm email="" />
             },
             {
                 // parameterized route
@@ -55,6 +56,7 @@ const RouterConfig = () => {
     return (
 
         <> 
+        <Toaster richColors closeButton />
         <RouterProvider router={RoutConfig} />
 
         {/* 
