@@ -1,30 +1,38 @@
-import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router";
+
+
+import { useNavigate, useParams } from "react-router";
 import Spinner from "../../components/Spinner";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import authSvc from "../../services/auth.service";
+import type { SuccessResponse } from "../../config/axios.config";
 
 const ActivateUser = () => {
 
-    const [loading, setLoading] = useState(true);
+    const params = useParams()
+    const navigate = useNavigate();
 
-    let params = useParams();
-
-    let [searchParams] = useSearchParams();
-    // let [searchParams, setSearchParams] = useSearchParams();
+    const activateUserProfile = async () => {
+        try {
+            const response = await authSvc.activateUserProfile(params.token as string) as unknown as SuccessResponse;
+            toast.success("Account activated successfully.", { description: response?.message });
+            navigate("/");
+            
+        } catch (exception: any) {
+            toast.error(exception?.message);
+            navigate("/");
+        }
+    }
 
     useEffect(() => {
-        // simulate api call
-        setTimeout(() => {
-            setLoading(false);
-        }, 2000);
+        activateUserProfile();
     }, [])
+
 
     return (
         <div className="text-center">
-            <h2>Activate User Page</h2>
-            <p>Query Param - ref: <span className="font-bold">{searchParams.get('name')?.toUpperCase()}</span></p>
-
             {
-                loading ? <p> <Spinner /></p> : <p>{params.token}</p>
+                <p> <Spinner /></p>
             }
         </div>
     )

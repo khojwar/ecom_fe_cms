@@ -4,11 +4,11 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import FormInput from "../form/FormInput";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Link } from "react-router";
-import { axiosInstance, type SuccessResponse } from "../../config/axios.config";
+import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
+import authSvc from "../../services/auth.service";
 
-interface IFormInput {
+export interface IFormInput {
   name: string;
   email: string;
   password: string;
@@ -39,12 +39,11 @@ const schema = yup.object().shape({
 });
 
 const RegisterForm = () => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors},
-    setError,
-  } = useForm<IFormInput>({
+
+  const navigate = useNavigate();
+
+
+  const { control, handleSubmit, formState: { errors}, setError, } = useForm<IFormInput>({
     defaultValues: {
       name: "",
       email: "",
@@ -61,16 +60,9 @@ const RegisterForm = () => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput) => {
     try {
-      // console.log("Form Data:", data);
-
-      const response = await axiosInstance.post("/auth/register", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }) as SuccessResponse;
-
-      console.log("Registration successful:", response.message);
+      const response = await authSvc.registerUser(data);
       toast.success(response.message);
+      navigate("/");
       
     } catch (exception: any) {
       if (exception.error) {
