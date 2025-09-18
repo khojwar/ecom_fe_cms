@@ -1,71 +1,83 @@
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { Button, Input, Select, DatePicker, Radio } from "antd";
+import { EyeInvisibleOutlined, EyeTwoTone, UploadOutlined } from "@ant-design/icons";
+import { Button, Input, Select, Radio, Upload } from "antd";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import FormInput from "../form/FormInput";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import dayjs from "dayjs";
 import { Link } from "react-router";
+import { axiosInstance } from "../../config/axios.config";
 
 interface IFormInput {
   name: string;
   email: string;
   password: string;
   confirmPassword: string;
-  role: string;
-  gender: string;
-  phone: string;
-  address: {
+  role: "customer" | "seller" | null;
+  gender: "male" | "female" | "other" | null;
+  phone: string | null;
+  address?: {
     billingAddress: string;
     shippingAddress: string;
   };
-  dob: string;
+  dob?: Date | null;
+  image?: any;
 }
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*()_])[a-zA-Z\d!@#$%^&*()_]{8,25}$/;
+
 const schema = yup.object().shape({
-  name: yup.string().required("Name is required"),
-  email: yup.string().email("Invalid email").required("Email is required"),
-  password: yup.string().min(6, "Password must be at least 6 characters").required(),
-  confirmPassword: yup
-    .string()
-    .nullable()
-    .oneOf([yup.ref("password"), null], "Passwords must match")
-    .required("Confirm password is required"),
-  role: yup.string().required("Role is required"),
-  gender: yup.string().required("Gender is required"),
-  phone: yup.string().matches(/^\d{10}$/, "Phone must be 10 digits").required(),
-  address: yup.object({
-    billingAddress: yup.string().required("Billing address required"),
-    shippingAddress: yup.string().required("Shipping address required"),
-  }),
-  dob: yup.string().required("Date of Birth is required"),
+  name: yup.string().min(2).max(50).required(),
+  email: yup.string().email().required(),
+  password: yup.string().matches(passwordRegex, "Password must be 8-25 characters long and include uppercase, lowercase, number, and special characters").required(),
+  confirmPassword: yup.string().oneOf([yup.ref("password")], "Passwords must match"),
+  role: yup.string().matches(/^(customer|seller)$/).nullable(),
+  gender: yup.string().matches(/^(male|female|other)$/).nullable(),
+  phone: yup.string().matches(/^(?:\+977[- ]?)?(?:\d{1,3}[- ]?)?\d{6,10}$/, "Phone number is not valid").nullable(),
+  dob: yup.date().nullable(),
+  image: yup.mixed(),
 });
 
 const RegisterForm = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors},
+    setError,
   } = useForm<IFormInput>({
     defaultValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
-      role: "",
-      gender: "",
+      role: "customer",
+      gender: "male",
       phone: "",
-      address: {
-        billingAddress: "",
-        shippingAddress: "",
-      },
-      dob: "",
+      image: null,
     },
-    resolver: yupResolver(schema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: yupResolver(schema) as any,
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log("Form submitted:", data);
+  const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput) => {
+    try {
+      // console.log("Form Data:", data);
+
+      const response = await axiosInstance.post("/auth/register", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("Registration successful:", response.data);
+      
+    } catch (exception: any) {
+      if (exception.error) {
+        Object.keys(exception.error).map((field) => {
+          console.log(`Error message: ${exception.error[field]}`);
+          setError(field as keyof IFormInput, { message: exception.error[field] });
+        })
+      }
+    }
   };
 
   return (
@@ -180,42 +192,24 @@ const RegisterForm = () => {
           </div>
         </div>
 
-        {/* Billing Address */}
+        {/* Image */}
         <div className="flex items-center">
-          <label className="block text-sm font-medium mb-1 w-1/4">Billing Address</label>
-          <div className="w-3/4">
-            <FormInput control={control} name="address.billingAddress" />
-            {errors.address?.billingAddress && <div className="text-red-500 text-sm ml-4 italic">{errors.address.billingAddress.message}</div>}
-          </div>
-        </div>
-
-        {/* Shipping Address */}
-        <div className="flex items-center">
-          <label className="block text-sm font-medium mb-1 w-1/4">Shipping Address</label>
-          <div className="w-3/4">
-            <FormInput control={control} name="address.shippingAddress" />
-            {errors.address?.shippingAddress && <div className="text-red-500 text-sm ml-4 italic">{errors.address.shippingAddress.message}</div>}
-          </div>
-        </div>
-
-        {/* DOB */}
-        <div className="flex items-center">
-          <label className="block text-sm font-medium mb-1 w-1/4">DOB</label>
+          <label className="w-1/4 text-sm font-medium">Profile Image</label>
           <div className="w-3/4">
             <Controller
-              name="dob"
+              name="image"
               control={control}
               render={({ field }) => (
-                <DatePicker
-                  {...field}
-                  className="w-3/4"
-                  format="YYYY-MM-DD"
-                  value={field.value ? dayjs(field.value) : null}
-                  onChange={(date, dateString) => field.onChange(dateString)}
-                />
+                <Upload
+                  beforeUpload={() => false}
+                  maxCount={1}
+                  onChange={({ file }) => field.onChange(file)}
+                >
+                  <Button icon={<UploadOutlined />}>Upload</Button>
+                </Upload>
               )}
             />
-            {errors.dob && <div className="text-red-500 text-sm ml-4 italic">{errors.dob.message}</div>}
+            {/* {errors?.image && <p className="text-red-500 text-sm italic">{errors?.image?.message}</p>} */}
           </div>
         </div>
 
