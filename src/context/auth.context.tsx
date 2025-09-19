@@ -1,4 +1,6 @@
-import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import { Spin } from "antd";
+import { createContext, useContext, useEffect, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import authSvc from "../services/auth.service";
 
 
 export interface ILoggedInUserProfile {
@@ -40,8 +42,30 @@ export const AuthContext = createContext<IAuthContext>({
 // 2. Create the AuthProvider component
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [loggedInUser, setLoggedInUserProfile] = useState<ILoggedInUserProfile | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    const getLoggedInUserProfileDetails = async () => {
+        try {
+            const userProfileResponse = await authSvc.getLoggedInUserProfile();
+            setLoggedInUserProfile(userProfileResponse.data);
+        } catch (exception) {
+            setLoggedInUserProfile(null);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        const token = localStorage.getItem("access_token");
+        if (token) {
+        getLoggedInUserProfileDetails();
+        } else {
+        setLoading(false);
+        }
+    }, []);
 
     return (
+        loading ? <div> <Spin fullscreen /> </div> :
         <AuthContext.Provider value={{ 
                 loggedInUser: loggedInUser, 
                 setLoggedInUserProfile: setLoggedInUserProfile 

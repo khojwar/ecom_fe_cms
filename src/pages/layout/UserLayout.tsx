@@ -1,10 +1,12 @@
 
 import {  Layout, theme } from "antd";
 import { useState } from "react";
-import { Outlet } from "react-router";
+import { Navigate, Outlet, useNavigate } from "react-router";
 import Sidebar from "../../components/sidebar/Sidebar";
 import type { ImenuItems } from "../../config/menu-items";
 import UserHeader from "../../components/header/Header";
+import { useAuth } from "../../context/auth.context";
+import { toast } from "sonner";
 
 
 const { Content } = Layout;
@@ -14,6 +16,14 @@ const UserLayout = ({menu, sTitle, lTitle} : Readonly<{menu: Array<ImenuItems>, 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  const { loggedInUser } = useAuth();
+
+
+  if (!loggedInUser) {
+    toast.error("You must be logged in to access this page.");
+    return <Navigate to="/" />
+  }
 
   return (
     <Layout className="h-screen">
