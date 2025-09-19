@@ -4,8 +4,10 @@ import { Controller, useForm} from 'react-hook-form';
 import FormInput from '../form/FormInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { type ICredentials, credentialsDTO } from './contract';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import AuthSvc from '../../services/auth.service';
+import { toast } from 'sonner';
+import { useAuth } from '../../context/auth.context';
 
 
 const LoginForm = () => {
@@ -18,10 +20,29 @@ const LoginForm = () => {
     resolver: yupResolver(credentialsDTO)
   })
 
+  const { setLoggedInUserProfile } = useAuth();
+  const navigate = useNavigate();
+
   const onSubmit = async (credentials: ICredentials) => {
     try {
-      const response = await AuthSvc.postRequest('/auth/login', credentials);
-      console.log(response);
+      // steps:
+      // 1. call the login API
+      // 2. save the token in local storage
+      // 3. get the user profile
+      // 4. success message using toast
+      // 5. save the user profile in context
+      // 6. redirect to the dashboard based on role
+
+      await AuthSvc.loginUser(credentials);
+      const profileResponse = await AuthSvc.getLoggedInUserProfile();
+
+      toast.success("Welcome to " + profileResponse.data.role + " panel!", {
+        description: "You can access different access panels from here."
+      });
+      
+      setLoggedInUserProfile(profileResponse.data);
+
+      navigate(`/${profileResponse.data.role}`);  // redirect based on role
 
     } catch (exception) {
       // handle

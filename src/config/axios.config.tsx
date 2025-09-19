@@ -11,9 +11,9 @@ export const axiosInstance = axios.create({
 });
 
 // Request Interceptor (add auth token if exists)
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token"); // or cookies
+axiosInstance.interceptors.request.use((config) => {
+    const token = localStorage.getItem("access_token"); // or cookies
+    
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -21,6 +21,8 @@ axiosInstance.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
+
 
 export interface SuccessResponse {
   data: any;

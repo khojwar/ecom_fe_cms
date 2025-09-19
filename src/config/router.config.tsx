@@ -9,6 +9,7 @@ import ForgotPasswordForm from '../components/auth/ForgotPasswordForm';
 import { AdminMenu, SellerMenu } from './menu-items';
 import UserLayout from '../pages/layout/UserLayout';
 import { Toaster} from 'sonner';
+import { AuthProvider } from '../context/auth.context';
 
 
 
@@ -56,8 +57,10 @@ const RouterConfig = () => {
     return (
 
         <> 
-        <Toaster richColors closeButton />
-        <RouterProvider router={RoutConfig} />
+        <AuthProvider>
+            <Toaster richColors closeButton />
+            <RouterProvider router={RoutConfig} />
+        </AuthProvider>
 
         {/* 
         <BrowserRouter>
