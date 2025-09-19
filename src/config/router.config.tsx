@@ -39,14 +39,14 @@ const RoutConfig = createBrowserRouter([
     },
     {
         path: '/admin',
-        element: <UserLayout menu={AdminMenu} sTitle={"ADM"} lTitle={"Admin Panel"} />,
+        element: <UserLayout role="admin" menu={AdminMenu} sTitle={"ADM"} lTitle={"Admin Panel"} />,
         children: [
             {index: true, element: <AdminDashboard /> },
         ]
     },
     {
         path: '/seller',
-        element: <UserLayout menu={SellerMenu} sTitle={"SEL"} lTitle={"Seller Panel"} />
+        element: <UserLayout role="seller" menu={SellerMenu} sTitle={"SEL"} lTitle={"Seller Panel"} />
     },
     {
         // page not found
