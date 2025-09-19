@@ -10,6 +10,7 @@ import { AdminMenu, SellerMenu } from './menu-items';
 import UserLayout from '../pages/layout/UserLayout';
 import { Toaster} from 'sonner';
 import { AuthProvider } from '../context/auth.context';
+import AdminDashboard from '../pages/dashboards/AdminDashboard';
 
 
 
@@ -39,7 +40,10 @@ const RoutConfig = createBrowserRouter([
     },
     {
         path: '/admin',
-        element: <UserLayout menu={AdminMenu} sTitle={"ADM"} lTitle={"Admin Panel"} />
+        element: <UserLayout menu={AdminMenu} sTitle={"ADM"} lTitle={"Admin Panel"} />,
+        children: [
+            {index: true, element: <AdminDashboard /> },
+        ]
     },
     {
         path: '/seller',
