@@ -1,21 +1,31 @@
 import { Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider'
 import type { ImenuItems } from '../../config/menu-items';
+import { useAuth } from '../../context/auth.context';
 
 
 const Sidebar = ({ collapsed, sTitle, lTitle, menu }: Readonly<{ collapsed: boolean, sTitle: string, lTitle: string, menu: Array<ImenuItems> }>) => {
+  const { loggedInUser } = useAuth();
+
   return (
     <div>
         <Sider trigger={null} collapsible collapsed={collapsed} className="h-screen">
             {/* Sidebar Header */}
-            <div className="flex items-center justify-center h-16 bg-gray-800 mb-4 transition-all duration-300">
-            <p
-                className={`text-white font-bold hover:cursor-pointer shadow-2xl transition-all duration-300 ${
-                collapsed ? "text-lg" : "text-2xl"
-                }`}
-            >
-                {collapsed ? sTitle : lTitle}
-            </p>
+            <div className="flex flex-col items-center justify-center  bg-gray-800 mb-4 py-4 transition-all duration-300">
+              <p
+                  className={`text-white font-bold hover:cursor-pointer shadow-2xl transition-all duration-300 ${
+                  collapsed ? "text-lg" : "text-2xl"
+                  }`}
+              >
+                  {collapsed ? sTitle : lTitle}
+              </p>
+              
+              <div className={`flex flex-col items-center justify-center mt-4 transition-all duration-300 ${collapsed ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'}`}>
+                <p className='text-center text-teal-500 font-semibold'>{loggedInUser?.name}</p>
+                <p className='text-center text-white font-light text-xs'>{loggedInUser?.email}</p>
+              </div>
+              
+
             </div>
 
             {/* Sidebar Menu */}
