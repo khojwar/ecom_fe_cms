@@ -11,7 +11,7 @@ const Sidebar = ({ collapsed, sTitle, lTitle, menu }: Readonly<{ collapsed: bool
     <div>
         <Sider trigger={null} collapsible collapsed={collapsed} className="h-screen">
             {/* Sidebar Header */}
-            <div className="flex flex-col items-center justify-center  bg-gray-800 mb-4 py-4 transition-all duration-300">
+            <div className="flex flex-col text-center py-4 bg-gray-800 mb-4">
               <p
                   className={`text-white font-bold hover:cursor-pointer shadow-2xl transition-all duration-300 ${
                   collapsed ? "text-lg" : "text-2xl"

@@ -10,7 +10,8 @@ import { AdminMenu, SellerMenu } from './menu-items';
 import UserLayout from '../pages/layout/UserLayout';
 import { Toaster} from 'sonner';
 import AdminDashboard from '../pages/dashboards/AdminDashboard';
-
+import BannerListingPage from '../pages/banners/BannerListingPage';
+import BannerCreatePage from '../pages/banners/BannerCreatePage';
 
 
 const RoutConfig = createBrowserRouter([
@@ -42,6 +43,9 @@ const RoutConfig = createBrowserRouter([
         element: <UserLayout role="admin" menu={AdminMenu} sTitle={"ADM"} lTitle={"Admin Panel"} />,
         children: [
             {index: true, element: <AdminDashboard /> },
+            {path: 'banners', element: <BannerListingPage /> },
+            {path: 'banners/create', element: <BannerCreatePage /> },
+            {path: '*', element: <PageNotFound /> }
         ]
     },
     {
