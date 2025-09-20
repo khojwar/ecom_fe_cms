@@ -1,7 +1,10 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Input, Space, Table} from 'antd';
 import type { TableProps } from 'antd';
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router';
+import { toast } from 'sonner';
+import { bannerSvc } from '../../services/banner.service';
 
 export interface IBannerData {
             _id: string;
@@ -47,18 +50,45 @@ const columns: TableProps<IBannerData>['columns'] = [
   },
 ];
 
-const data: IBannerData[] = [
-{
-    _id: "cfba045c-4fda-49e7-af86-b684bc1c0ddf",
-    title: "banner one",
-    url: "https://google.com",
-    status: "active",
-    image: "https://res.cloudinary.com/dmr8kzy5n/image/upload/c_scale,w_500/f_auto,q_auto/v1/api-42/banner/pletjzz0zbcwfax076z5?_a=BAMClqXy0"
-},
-  
-];
+// const data: IBannerData[] = [
+// {
+//     _id: "cfba045c-4fda-49e7-af86-b684bc1c0ddf",
+//     title: "banner one",
+//     url: "https://google.com",
+//     status: "active",
+//     image: "https://res.cloudinary.com/dmr8kzy5n/image/upload/c_scale,w_500/f_auto,q_auto/v1/api-42/banner/pletjzz0zbcwfax076z5?_a=BAMClqXy0"
+// },
+// ];
+
+
 
 const BannerListingPage = () => {
+
+    const [data, setData] = useState<IBannerData[]>([]);
+
+
+  const getBannerList = async () => {
+      try {
+        // console.log("Fetching banner list...");
+        
+        const response = await bannerSvc.getRequest("/banner");
+        // console.log("Banner List:", response.data);
+        setData(response.data);  
+        
+      } catch (exception) {
+        // console.log(exception);
+        
+        toast.error("Failed to fetch banner list. Please try again." , {
+          description: "An error occurred while retrieving the banner data."
+        });
+      }
+    }
+
+
+    useEffect(() => {
+      getBannerList();
+    }, [])
+
   return (
     <div>
         <div className='mb-4 text-teal-900 border-b-2 border-teal-900 pb-2'>
@@ -75,7 +105,14 @@ const BannerListingPage = () => {
                 </div>
         </div>
 
-        <Table<IBannerData> columns={columns} dataSource={data} pagination={{ position: ['bottomCenter'] }} />
+        <Table<IBannerData> 
+          columns={columns} 
+          dataSource={data as Readonly<IBannerData[]>} 
+          pagination={{ position: ['bottomCenter'] }} 
+          rowKey={ (data: IBannerData) => {
+            return data._id
+          }} 
+        />
     </div>
   )
 }
