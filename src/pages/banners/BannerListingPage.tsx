@@ -19,17 +19,19 @@ const columns: TableProps<IBannerData>['columns'] = [
     title: 'Title',
     dataIndex: 'title',
     key: 'title',
-    render: (text) => <a>{text}</a>,
+    render: (text) => <a className='text-black!'>{text}</a>,
   },
   {
     title: 'Url',
     dataIndex: 'url',
     key: 'url',
+    render: (text: string) => <a href={text} target="_blank" rel="noopener noreferrer" className='text-blue-600! hover:underline!'>{text}</a>,
   },
   {
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
+    render: (text: string) => text === 'active' ? <span className='text-green-600  bg-teal-600/15 px-4 py-2 rounded-2xl text-xs'>Published</span> : <span className='text-red-600  bg-red-600/15 px-4 py-2 rounded-2xl text-xs'>Unpublished</span>,
   },
   {
     title: 'Image',

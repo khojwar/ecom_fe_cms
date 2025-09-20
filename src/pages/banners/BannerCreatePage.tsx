@@ -92,8 +92,8 @@ const BannerCreatePage = () => {
                     control={control}
                     render={({ field }) => (
                       <Select {...field} placeholder="Select status">
-                        <Select.Option value="active">Active</Select.Option>
                         <Select.Option value="inactive">Inactive</Select.Option>
+                        <Select.Option value="active">Active</Select.Option>
                       </Select>
                     )}
                   />
