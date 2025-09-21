@@ -75,7 +75,7 @@ const BannerListingPage = () => {
     });
 
 
-  const getBannerList = async ({page=paginationDefault.page, limit=paginationDefault.limit, search=null}): Promise<void> => {
+  const getBannerList = async ({page = paginationDefault.page, limit = paginationDefault.limit, search = null}: {page?: number; limit?: number; search?: string | null}): Promise<void> => {
       try {
         // console.log("Fetching banner list...");
 
@@ -87,6 +87,18 @@ const BannerListingPage = () => {
         // 5. pass pagination state to antd table
 
         
+
+        // steps for search and debounce
+        // debounce means to delay the api call until user stops typing for a certain amount of time
+        // we can use setTimeout and clearTimeout for this
+          // 1. create a state for search
+          // 2. create a input field for search and bind it to search state
+          // 2.5 use useEffect to watch for search state change and call api with debounce
+          // 3. call api with search query 
+        
+
+
+
         const response = await bannerSvc.getRequest("/banner", {
           params: {
             page:page,
@@ -117,7 +129,7 @@ const BannerListingPage = () => {
     useEffect(() => {
       const time = setTimeout(() => {
         getBannerList({ page: paginationDefault.page, limit: paginationDefault.limit, search: search ?? null});
-      }, 500);
+      }, 1000);
 
       return () => clearTimeout(time);
     }, [search])
