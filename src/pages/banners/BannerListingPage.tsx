@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router';
 import { toast } from 'sonner';
 import { bannerSvc } from '../../services/banner.service';
-import { paginationDefault, type IPaginationType } from '../../config/constants';
+import { paginationDefault, type IPaginationType} from '../../config/constants';
 
 export interface IBannerData {
             _id: string;
@@ -66,7 +66,7 @@ const columns: TableProps<IBannerData>['columns'] = [
 
 
 const BannerListingPage = () => {
-
+    const [search, setSearch] = useState<string | null>(null);
     const [data, setData] = useState<IBannerData[]>([]);
     const [pagination, setPagination] = useState<IPaginationType>({
       current: paginationDefault.page,
@@ -75,7 +75,7 @@ const BannerListingPage = () => {
     });
 
 
-  const getBannerList = async ({page=paginationDefault.page, limit=paginationDefault.limit, search=null}) => {
+  const getBannerList = async ({page=paginationDefault.page, limit=paginationDefault.limit, search=null}): Promise<void> => {
       try {
         // console.log("Fetching banner list...");
 
@@ -85,7 +85,7 @@ const BannerListingPage = () => {
         // 3. set data to state
         // 4. set pagination to state
         // 5. pass pagination state to antd table
-        
+
         
         const response = await bannerSvc.getRequest("/banner", {
           params: {
@@ -104,6 +104,7 @@ const BannerListingPage = () => {
           total: +response.options.pagination.total,
         });
         
+        
       } catch (exception) {
         // console.log(exception);
         
@@ -114,12 +115,12 @@ const BannerListingPage = () => {
     }
 
     useEffect(() => {
-      getBannerList({
-        page: paginationDefault.page, 
-        limit: paginationDefault.limit, 
-        search: null
-      });
-    }, [])
+      const time = setTimeout(() => {
+        getBannerList({ page: paginationDefault.page, limit: paginationDefault.limit, search: search ?? null});
+      }, 500);
+
+      return () => clearTimeout(time);
+    }, [search])
 
     const onPaginationChange = (page: number, pageSize: number) => {
               getBannerList({page: page, limit: pageSize});
@@ -132,7 +133,7 @@ const BannerListingPage = () => {
                 <h2 className='text-2xl font-bold  '>Banner Listing</h2>
                 <div className='flex justify-center items-center gap-4'>
                     <div>
-                        <Input.Search placeholder="searching..." size='large' />
+                        <Input.Search placeholder="searching..." size='large' onChange={(e) => setSearch(e.target.value)} />
                     </div>
                         <NavLink to="/admin/banners/create" className=" inline-block! bg-teal-900! text-white! px-4! py-2! rounded! hover:bg-teal-950! transition-all! duration-300!">
                         <PlusOutlined /> Add Banner

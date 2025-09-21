@@ -12,7 +12,7 @@
 
 export const paginationDefault = {
   page: 1,
-  limit: 2,
+  limit: 15,
   total: 0,
 };
 
@@ -20,4 +20,10 @@ export interface IPaginationType {
     current: number;   
     pageSize: number;
     total: number;
+}
+
+export interface IPaginationWithSearchType {
+    page?: number;   
+    limit?: number;
+    search?: string | null;
 }
