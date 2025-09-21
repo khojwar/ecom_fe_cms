@@ -1,6 +1,6 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Input, Space, Table} from 'antd';
-import type { TableProps } from 'antd';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Input, message, Popconfirm, Space, Table} from 'antd';
+import type { PopconfirmProps, TableProps } from 'antd';
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router';
 import { toast } from 'sonner';
@@ -44,14 +44,42 @@ const columns: TableProps<IBannerData>['columns'] = [
     title: 'Action',
     key: 'action',
     dataIndex: '_id',
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Invite {record.title}</a>
-        <a>Delete</a>
-      </Space>
-    ),
+    render: (val: string) => {
+      return (
+        <>
+        <Space size="middle">
+          <NavLink to={`/admin/banners/${val}`} className="flex! justify-center! items-center! bg-teal-700! text-white! h-10 w-10 rounded-full! hover:bg-teal-950! transition-all! duration-300!  gap-2!">
+          <EditOutlined /> 
+          </NavLink>
+          {/* <a href="#" className="text-red-600 hover:underline!">Delete</a> */}
+            <Popconfirm
+              title="Are you sure?"
+              description="Once deleted, you will not be able to recover this banner!"
+              onConfirm={confirm}
+              onCancel={cancel}
+              okText="Confirm"
+              cancelText="Cancel"
+            >
+              <Button className="flex! justify-center! items-center! h-10! w-10! bg-red-700! text-white! rounded-full! hover:bg-red-950! transition-all! duration-300!">
+                <DeleteOutlined /> 
+              </Button>
+            </Popconfirm>
+        </Space>
+        </>
+      )
+    }
   },
 ];
+
+const confirm: PopconfirmProps['onConfirm'] = (e) => {
+  console.log(e);
+  message.success('Click on Yes');
+};
+
+const cancel: PopconfirmProps['onCancel'] = (e) => {
+  console.log(e);
+  message.error('Click on No');
+};
 
 // const data: IBannerData[] = [
 // {
