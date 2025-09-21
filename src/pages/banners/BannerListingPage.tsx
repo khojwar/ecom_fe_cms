@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router';
 import { toast } from 'sonner';
 import { bannerSvc } from '../../services/banner.service';
+import { paginationDefault, type IPaginationType } from '../../config/constants';
 
 export interface IBannerData {
             _id: string;
@@ -67,15 +68,41 @@ const columns: TableProps<IBannerData>['columns'] = [
 const BannerListingPage = () => {
 
     const [data, setData] = useState<IBannerData[]>([]);
+    const [pagination, setPagination] = useState<IPaginationType>({
+      current: paginationDefault.page,
+      pageSize: paginationDefault.limit,
+      total: paginationDefault.total,
+    });
 
 
-  const getBannerList = async () => {
+  const getBannerList = async ({page=paginationDefault.page, limit=paginationDefault.limit, search=null}) => {
       try {
         // console.log("Fetching banner list...");
+
+        // steps for pagination 
+        // 1. call api with page and limit
+        // 2. get response with data and pagination info
+        // 3. set data to state
+        // 4. set pagination to state
+        // 5. pass pagination state to antd table
         
-        const response = await bannerSvc.getRequest("/banner");
-        // console.log("Banner List:", response.data);
+        
+        const response = await bannerSvc.getRequest("/banner", {
+          params: {
+            page:page,
+            limit:limit,
+            search:search
+          }
+        });
+        console.log("Banner List:", response.options);
+
         setData(response.data);  
+
+        setPagination({
+          current: +response.options.pagination.current,
+          pageSize: +response.options.pagination.limit,
+          total: +response.options.pagination.total,
+        });
         
       } catch (exception) {
         // console.log(exception);
@@ -86,10 +113,17 @@ const BannerListingPage = () => {
       }
     }
 
-
     useEffect(() => {
-      getBannerList();
+      getBannerList({
+        page: paginationDefault.page, 
+        limit: paginationDefault.limit, 
+        search: null
+      });
     }, [])
+
+    const onPaginationChange = (page: number, pageSize: number) => {
+              getBannerList({page: page, limit: pageSize});
+            }
 
   return (
     <div>
@@ -110,10 +144,16 @@ const BannerListingPage = () => {
         <Table<IBannerData> 
           columns={columns} 
           dataSource={data as Readonly<IBannerData[]>} 
-          pagination={{ position: ['bottomCenter'] }} 
+          pagination={{ 
+            position: ['bottomCenter'], 
+            ...pagination,
+            onChange: onPaginationChange
+
+          }} 
           rowKey={ (data: IBannerData) => {
             return data._id
           }} 
+          
         />
     </div>
   )

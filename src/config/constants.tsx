@@ -9,3 +9,15 @@
 //   FEMALE = "female",
 //   OTHER = "other",
 // }
+
+export const paginationDefault = {
+  page: 1,
+  limit: 2,
+  total: 0,
+};
+
+export interface IPaginationType {
+    current: number;   
+    pageSize: number;
+    total: number;
+}
