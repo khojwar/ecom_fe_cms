@@ -12,6 +12,7 @@ import { Toaster} from 'sonner';
 import AdminDashboard from '../pages/dashboards/AdminDashboard';
 import BannerListingPage from '../pages/banners/BannerListingPage';
 import BannerCreatePage from '../pages/banners/BannerCreatePage';
+import BannerEditPage from '../pages/banners/BannerEditPage';
 
 
 const RoutConfig = createBrowserRouter([
@@ -45,6 +46,7 @@ const RoutConfig = createBrowserRouter([
             {index: true, element: <AdminDashboard /> },
             {path: 'banners', element: <BannerListingPage /> },
             {path: 'banners/create', element: <BannerCreatePage /> },
+            {path: 'banner/:id', element: <BannerEditPage /> },
             {path: '*', element: <PageNotFound /> }
         ]
     },

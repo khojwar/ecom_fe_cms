@@ -7,7 +7,7 @@ import { bannerSvc } from "../../services/banner.service";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
-interface IBannerCreateForm {
+export interface IBannerCreateForm {
   title: string;
   status: "active" | "inactive";
   link: string;

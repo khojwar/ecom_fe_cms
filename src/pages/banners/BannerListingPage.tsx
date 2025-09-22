@@ -75,7 +75,7 @@ const BannerListingPage = () => {
           return (
             <>
             <Space size="middle">
-              <NavLink to={`/admin/banners/${val}`} className="flex! justify-center! items-center! bg-teal-700! text-white! h-10 w-10 rounded-full! hover:bg-teal-950! transition-all! duration-300!  gap-2!">
+              <NavLink to={`/admin/banner/${val}`} className="flex! justify-center! items-center! bg-teal-700! text-white! h-10 w-10 rounded-full! hover:bg-teal-950! transition-all! duration-300!  gap-2!">
               <EditOutlined /> 
               </NavLink>
               {/* <a href="#" className="text-red-600 hover:underline!">Delete</a> */}
