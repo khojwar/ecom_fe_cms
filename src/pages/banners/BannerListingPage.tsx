@@ -16,10 +16,6 @@ export interface IBannerData {
         }
 
 
-
-
-
-
 // const data: IBannerData[] = [
 // {
 //     _id: "cfba045c-4fda-49e7-af86-b684bc1c0ddf",
@@ -29,7 +25,6 @@ export interface IBannerData {
 //     image: "https://res.cloudinary.com/dmr8kzy5n/image/upload/c_scale,w_500/f_auto,q_auto/v1/api-42/banner/pletjzz0zbcwfax076z5?_a=BAMClqXy0"
 // },
 // ];
-
 
 
 const BannerListingPage = () => {

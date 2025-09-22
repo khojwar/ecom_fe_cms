@@ -12,7 +12,7 @@
 
 export const paginationDefault = {
   page: 1,
-  limit: 15,
+  limit: 2,
   total: 0,
 };
 

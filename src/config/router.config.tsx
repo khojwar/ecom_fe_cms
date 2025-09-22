@@ -13,6 +13,7 @@ import AdminDashboard from '../pages/dashboards/AdminDashboard';
 import BannerListingPage from '../pages/banners/BannerListingPage';
 import BannerCreatePage from '../pages/banners/BannerCreatePage';
 import BannerEditPage from '../pages/banners/BannerEditPage';
+import BrandListingPage from '../pages/brands/BrandListingPage';
 
 
 const RoutConfig = createBrowserRouter([
@@ -44,9 +45,18 @@ const RoutConfig = createBrowserRouter([
         element: <UserLayout role="admin" menu={AdminMenu} sTitle={"ADM"} lTitle={"Admin Panel"} />,
         children: [
             {index: true, element: <AdminDashboard /> },
+
+            // banners
             {path: 'banners', element: <BannerListingPage /> },
             {path: 'banners/create', element: <BannerCreatePage /> },
             {path: 'banner/:id', element: <BannerEditPage /> },
+
+            // brand routes
+            {path: 'brands', element: <BrandListingPage /> },
+
+
+
+            // page not found
             {path: '*', element: <PageNotFound /> }
         ]
     },
