@@ -94,6 +94,7 @@ const cancel: PopconfirmProps['onCancel'] = (e) => {
 
 
 const BannerListingPage = () => {
+    const [loading, setLoading] = useState<boolean>(true);
     const [search, setSearch] = useState<string | null>(null);
     const [data, setData] = useState<IBannerData[]>([]);
     const [pagination, setPagination] = useState<IPaginationType>({
@@ -151,6 +152,8 @@ const BannerListingPage = () => {
         toast.error("Failed to fetch banner list. Please try again." , {
           description: "An error occurred while retrieving the banner data."
         });
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -194,7 +197,7 @@ const BannerListingPage = () => {
           rowKey={ (data: IBannerData) => {
             return data._id
           }} 
-          
+          loading={loading}
         />
     </div>
   )
