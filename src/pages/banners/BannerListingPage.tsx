@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Input, message, Popconfirm, Space, Table} from 'antd';
-import type { PopconfirmProps, TableProps } from 'antd';
+import { Button, Input, Popconfirm, Space, Table} from 'antd';
+import type { TableProps } from 'antd';
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router';
 import { toast } from 'sonner';
@@ -15,71 +15,10 @@ export interface IBannerData {
             image: string;
         }
 
-const columns: TableProps<IBannerData>['columns'] = [
-  {
-    title: 'Title',
-    dataIndex: 'title',
-    key: 'title',
-    render: (text) => <a className='text-black!'>{text}</a>,
-  },
-  {
-    title: 'Url',
-    dataIndex: 'url',
-    key: 'url',
-    render: (text: string) => <a href={text} target="_blank" rel="noopener noreferrer" className='text-blue-600! hover:underline!'>{text}</a>,
-  },
-  {
-    title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
-    render: (text: string) => text === 'active' ? <span className='text-green-600  bg-teal-600/15 px-4 py-2 rounded-2xl text-xs'>Published</span> : <span className='text-red-600  bg-red-600/15 px-4 py-2 rounded-2xl text-xs'>Unpublished</span>,
-  },
-  {
-    title: 'Image',
-    key: 'image',
-    dataIndex: 'image',
-    render: (text: string) => <img src={text} alt="banner" className='w-20 h-10 object-cover rounded' />,
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    dataIndex: '_id',
-    render: (val: string) => {
-      return (
-        <>
-        <Space size="middle">
-          <NavLink to={`/admin/banners/${val}`} className="flex! justify-center! items-center! bg-teal-700! text-white! h-10 w-10 rounded-full! hover:bg-teal-950! transition-all! duration-300!  gap-2!">
-          <EditOutlined /> 
-          </NavLink>
-          {/* <a href="#" className="text-red-600 hover:underline!">Delete</a> */}
-            <Popconfirm
-              title="Are you sure?"
-              description="Once deleted, you will not be able to recover this banner!"
-              onConfirm={confirm}
-              onCancel={cancel}
-              okText="Confirm"
-              cancelText="Cancel"
-            >
-              <Button className="flex! justify-center! items-center! h-10! w-10! bg-red-700! text-white! rounded-full! hover:bg-red-950! transition-all! duration-300!">
-                <DeleteOutlined /> 
-              </Button>
-            </Popconfirm>
-        </Space>
-        </>
-      )
-    }
-  },
-];
 
-const confirm: PopconfirmProps['onConfirm'] = (e) => {
-  console.log(e);
-  message.success('Click on Yes');
-};
 
-const cancel: PopconfirmProps['onCancel'] = (e) => {
-  console.log(e);
-  message.error('Click on No');
-};
+
+
 
 // const data: IBannerData[] = [
 // {
@@ -102,6 +41,83 @@ const BannerListingPage = () => {
       pageSize: paginationDefault.limit,
       total: paginationDefault.total,
     });
+
+    const columns: TableProps<IBannerData>['columns'] = [
+      {
+        title: 'Title',
+        dataIndex: 'title',
+        key: 'title',
+        render: (text) => <a className='text-black!'>{text}</a>,
+      },
+      {
+        title: 'Url',
+        dataIndex: 'url',
+        key: 'url',
+        render: (text: string) => <a href={text} target="_blank" rel="noopener noreferrer" className='text-blue-600! hover:underline!'>{text}</a>,
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        render: (text: string) => text === 'active' ? <span className='text-green-600  bg-teal-600/15 px-4 py-2 rounded-2xl text-xs'>Published</span> : <span className='text-red-600  bg-red-600/15 px-4 py-2 rounded-2xl text-xs'>Unpublished</span>,
+      },
+      {
+        title: 'Image',
+        key: 'image',
+        dataIndex: 'image',
+        render: (text: string) => <img src={text} alt="banner" className='w-20 h-10 object-cover rounded' />,
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        dataIndex: '_id',
+        render: (val: string) => {
+          return (
+            <>
+            <Space size="middle">
+              <NavLink to={`/admin/banners/${val}`} className="flex! justify-center! items-center! bg-teal-700! text-white! h-10 w-10 rounded-full! hover:bg-teal-950! transition-all! duration-300!  gap-2!">
+              <EditOutlined /> 
+              </NavLink>
+              {/* <a href="#" className="text-red-600 hover:underline!">Delete</a> */}
+                <Popconfirm
+                  title="Are you sure?"
+                  description="Once deleted, you will not be able to recover this banner!"
+                  onConfirm={() => {
+                    onDeleteConfirm(val);
+                  }}
+                  showCancel={false}
+                  okText="Confirm!"
+                >
+                  <Button className="flex! justify-center! items-center! h-10! w-10! bg-red-700! text-white! rounded-full! hover:bg-red-950! transition-all! duration-300!">
+                    <DeleteOutlined /> 
+                  </Button>
+                </Popconfirm>
+            </Space>
+            </>
+          )
+        }
+      },
+    ];
+
+    const onDeleteConfirm = async (bannerId: string) => {
+      setLoading(true);
+      try {
+        await bannerSvc.deleteRequest(`/banner/${bannerId}`);
+        toast.success("Banner deleted successfully.", {
+          description: "The banner has been removed."
+        });
+        
+        await getBannerList({ page: paginationDefault.page, limit: paginationDefault.limit });
+
+      } catch (exception) {
+        toast.error("Failed to delete banner. Please try again.", {
+          description: "An error occurred while deleting the banner." 
+        });
+      } finally {
+        setLoading(false);
+      }
+
+    };
 
 
   const getBannerList = async ({page = paginationDefault.page, limit = paginationDefault.limit, search = null}: {page?: number; limit?: number; search?: string | null}): Promise<void> => {
