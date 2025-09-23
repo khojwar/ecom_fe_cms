@@ -1,10 +1,10 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons"
 import { Button, Input, Popconfirm, Space, Table,  type TableProps } from "antd"
 import { useEffect, useState } from "react";
-import { BrandSvc } from "../../services/brand.service";
 import { paginationDefault } from "../../config/constants";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
+import { brandSvc } from "../../services/brand.service";
 
 // ✅ Enums for fixed values
 export type BrandStatus = "active" | "inactive";
@@ -34,8 +34,6 @@ export interface IBrand {
 
 
 
-
-
 const BrandListingPage = () => {
 const [data, setData] = useState<IBrand[]>([]);
 const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
@@ -47,7 +45,7 @@ const navigate = useNavigate();
     const onDeleteConfirm = async (brandId: string) => {
       setLoading(true);
        try {
-        const response = await BrandSvc.deleteRequest(`/brand/${brandId}`);
+        const response = await brandSvc.deleteRequest(`/brand/${brandId}`);
         if(response?.data) {
             toast.success('Brand deleted successfully!', {
               description: "The brand has been removed from the listing.",
@@ -106,12 +104,12 @@ const navigate = useNavigate();
         key: "action",
         dataIndex: "_id",
         render: (val: string) => (
-          <div>
-            <Button shape="circle" icon={<EditOutlined />}  className="bg-teal-700! text-white! p-5!" />
+          <div className="flex gap-4">
+            <Button shape="circle" icon={<EditOutlined />} onClick={() => navigate(`/admin/brand/${val}`)} className="bg-teal-700! text-white! p-5!" />
             <Space size="middle">
                 <Popconfirm
-                  title="Delete the task"
-                  description="Are you sure to delete this task?"
+                  title="Delete the brand"
+                  description="Are you sure to delete this brand?"
                   onConfirm={() => {
                     onDeleteConfirm(val);
                   }}
@@ -148,7 +146,7 @@ const navigate = useNavigate();
     const getBrandList = async ({page = paginationDefault.page, limit = paginationDefault.limit, search = null}: {page?: number; limit?: number; search?: string | null}): Promise<void> => {
       setLoading(true);
       try {
-        const response = await BrandSvc.getRequest('/brand', { 
+        const response = await brandSvc.getRequest('/brand', { 
             params: { page, limit, search } 
         });
 

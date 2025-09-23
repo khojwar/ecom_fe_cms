@@ -5,5 +5,5 @@ class BrandService extends BaseService {
 
 }
 
-export const BrandSvc = new BrandService();
+export const brandSvc = new BrandService();
 
