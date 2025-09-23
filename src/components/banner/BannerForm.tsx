@@ -39,6 +39,7 @@ const makeSchema = (requireImage: boolean) => {
 const BannerForm = ({ initialValues, onSubmit, submitLabel = "Save Banner", requireImage = true, }: Readonly<BannerFormProps>) => {
   
   const [thumbUrl, setThumbUrl] = useState<string>("https://placehold.co/300x100");
+  
 
   const {handleSubmit,control,formState: { errors, isSubmitting }, reset,} = useForm<IBannerFormData>({
     defaultValues: {
@@ -108,27 +109,29 @@ const BannerForm = ({ initialValues, onSubmit, submitLabel = "Save Banner", requ
       </div>
 
       {/* Image */}
-      <div className="mb-4 flex items-start gap-4">
+      <div className="mb-4 flex items-start">
         <label className="block text-sm font-medium mb-1 w-1/4">Image</label>
         <div className="w-3/4 flex flex-col">
-          <Controller
-            name="image"
-            control={control}
-            render={({ field }) => (
-              <Upload
-                beforeUpload={(file) => {
-                  field.onChange(file);
-                  setThumbUrl(URL.createObjectURL(file));
-                  return false;
-                }}
-                maxCount={1}
-              >
-                <Button icon={<UploadOutlined />}>Select Image</Button>
-              </Upload>
-            )}
-          />
-          <img src={thumbUrl} alt="Preview" className="mt-2 h-24 rounded border" />
-        </div>
+            <div className="flex justify-between">
+                <Controller
+                  name="image"
+                  control={control}
+                  render={({ field }) => (
+                    <Upload
+                      beforeUpload={(file) => {
+                        field.onChange(file);
+                        setThumbUrl(URL.createObjectURL(file));
+                        return false;
+                      }}
+                      maxCount={1}
+                    >
+                      <Button icon={<UploadOutlined />}>Select Image</Button>
+                    </Upload>
+                  )}
+                />
+                <img src={thumbUrl} alt="Preview" className="mt-2 h-24 rounded shadow" />
+              </div>
+            </div>
       </div>
 
       {/* Buttons */}

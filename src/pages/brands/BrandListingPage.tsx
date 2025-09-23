@@ -1,8 +1,10 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons"
-import { Button, Input, Space, Table, type TableProps } from "antd"
+import { Button, Input, Popconfirm, Space, Table,  type TableProps } from "antd"
 import { useEffect, useState } from "react";
 import { BrandSvc } from "../../services/brand.service";
 import { paginationDefault } from "../../config/constants";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 // ✅ Enums for fixed values
 export type BrandStatus = "active" | "inactive";
@@ -35,9 +37,36 @@ export interface IBrand {
 
 
 const BrandListingPage = () => {
-  const [data, setData] = useState<IBrand[]>([]);
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
-  const [brandSearch, setBrandSearch] = useState<string>("");
+const [data, setData] = useState<IBrand[]>([]);
+const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+const [brandSearch] = useState<string>("");
+const [loading, setLoading] = useState<boolean>(true);
+
+const navigate = useNavigate();
+
+    const onDeleteConfirm = async (brandId: string) => {
+      setLoading(true);
+       try {
+        const response = await BrandSvc.deleteRequest(`/brand/${brandId}`);
+        if(response?.data) {
+            toast.success('Brand deleted successfully!', {
+              description: "The brand has been removed from the listing.",
+            });
+            // Refresh the brand list after deletion
+            getBrandList({ page: pagination.current, limit: pagination.pageSize, search: brandSearch ?? null });
+        }
+        
+
+       } catch (exception) {
+          toast.error('Failed to delete the brand. Please try again.', {
+            description: "If the problem persists, contact support.",
+          });
+       } finally {
+        setLoading(false);
+       }
+        
+
+    };
 
     const columns: TableProps<IBrand>["columns"] = [
       {
@@ -76,11 +105,21 @@ const BrandListingPage = () => {
         title: "Action",
         key: "action",
         dataIndex: "_id",
-  render: (_: any) => (
+        render: (val: string) => (
           <div>
+            <Button shape="circle" icon={<EditOutlined />}  className="bg-teal-700! text-white! p-5!" />
             <Space size="middle">
-                <Button shape="circle" icon={<EditOutlined />} className="bg-teal-700! text-white! p-5!" />
-                <Button shape="circle" icon={<DeleteOutlined />} className="bg-red-700! text-white! p-5!" />
+                <Popconfirm
+                  title="Delete the task"
+                  description="Are you sure to delete this task?"
+                  onConfirm={() => {
+                    onDeleteConfirm(val);
+                  }}
+                  okText="Confirm!"
+                  showCancel={false}
+                >
+                    <Button shape="circle" icon={<DeleteOutlined />}  className="bg-red-700! text-white! p-5!" />
+                </Popconfirm>
             </Space>
           </div>
         ),
@@ -107,6 +146,8 @@ const BrandListingPage = () => {
 
     // dynamic data using API call
     const getBrandList = async ({page = paginationDefault.page, limit = paginationDefault.limit, search = null}: {page?: number; limit?: number; search?: string | null}): Promise<void> => {
+      setLoading(true);
+      try {
         const response = await BrandSvc.getRequest('/brand', { 
             params: { page, limit, search } 
         });
@@ -124,10 +165,18 @@ const BrandListingPage = () => {
                 total: response?.options?.pagination?.total,
             });
         }
+        
+      } catch (exception) {
+        toast.error('Failed to fetch brand list. Please try again.', {
+          description: "If the problem persists, contact support.",
+        });
+      } finally {
+        setLoading(false);
+      }
     }
 
     useEffect(()=>{
-  getBrandList({ page: paginationDefault.page, limit: paginationDefault.limit, search: brandSearch ?? null});
+      getBrandList({ page: paginationDefault.page, limit: paginationDefault.limit, search: brandSearch ?? null});
     }, [])
 
 
@@ -148,33 +197,30 @@ const BrandListingPage = () => {
                 icon={<PlusOutlined />}
                 size="middle"
                 className="bg-teal-900! text-white! hover:bg-teal-700! w-full sm:w-auto"
+                onClick={() => navigate('/admin/brands/create')}
                 >
-                Download
+                Add Brand
                 </Button>
             </div>
         </div>
 
-    {/* table */}
-    <div>
-      <Table<IBrand> 
-        columns={columns} 
-        dataSource={data} 
-        rowKey="_id" 
-        pagination={{
-            position: ["bottomCenter"], 
-            ...pagination,
-            onChange: (page, pageSize) => {
-                // handle page change
-                // console.log("Page:", page, "PageSize:", pageSize);
-                
-                // You can call getBrandList with new page and pageSize here
-                getBrandList({page: page, limit: pageSize});
-            }
-        }}
-      />
-    </div>
-
-
+        {/* table */}
+        <div>
+          <Table<IBrand> 
+            columns={columns} 
+            dataSource={data} 
+            rowKey="_id" 
+            pagination={{
+                position: ["bottomCenter"], 
+                ...pagination,
+                onChange: (page, pageSize) => {
+                    getBrandList({page: page, limit: pageSize});
+                }
+            }}
+            loading={loading}
+          />
+        </div>
+        
     </div>
   )
 }

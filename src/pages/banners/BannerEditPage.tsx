@@ -49,9 +49,14 @@ const BannerEditPage = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 border rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Edit Banner</h2>
-      {loading ? <Spin size="large" className="mx-auto my-20" /> : (
+    <>
+        <div className='mb-4 text-teal-900 border-b-2 border-teal-900 pb-2'>
+            <div className='flex flex-col md:flex-row md:justify-between md:items-center gap-4'>
+                <h2 className='text-2xl font-bold  '>Create Banner</h2>
+            </div>
+        </div>
+
+        {loading ? <Spin size="large" className="mx-auto my-20" /> : (
         <BannerForm
           initialValues={initialValues}
           onSubmit={handleUpdate}
@@ -59,7 +64,8 @@ const BannerEditPage = () => {
           submitLabel="Update Banner"
         />
       )}
-    </div>
+    
+    </>
   );
 };
 

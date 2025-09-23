@@ -14,6 +14,8 @@ import BannerListingPage from '../pages/banners/BannerListingPage';
 import BannerCreatePage from '../pages/banners/BannerCreatePage';
 import BannerEditPage from '../pages/banners/BannerEditPage';
 import BrandListingPage from '../pages/brands/BrandListingPage';
+import BrandCreatePage from '../pages/brands/BrandCreatePage';
+import BrandEditPage from '../pages/brands/BrandEditPage';
 
 
 const RoutConfig = createBrowserRouter([
@@ -53,8 +55,8 @@ const RoutConfig = createBrowserRouter([
 
             // brand routes
             {path: 'brands', element: <BrandListingPage /> },
-
-
+            {path: 'brands/create', element: <BrandCreatePage /> },
+            {path: 'brand/:id', element: <BrandEditPage /> },
 
             // page not found
             {path: '*', element: <PageNotFound /> }
