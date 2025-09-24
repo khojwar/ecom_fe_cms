@@ -108,8 +108,8 @@ const navigate = useNavigate();
             <Button shape="circle" icon={<EditOutlined />} onClick={() => navigate(`/admin/brand/${val}`)} className="bg-teal-700! text-white! p-5!" />
             <Space size="middle">
                 <Popconfirm
-                  title="Delete the brand"
-                  description="Are you sure to delete this brand?"
+                  title="Are you sure?"
+                  description="Once deleted, you will not be able to recover this brand!"
                   onConfirm={() => {
                     onDeleteConfirm(val);
                   }}

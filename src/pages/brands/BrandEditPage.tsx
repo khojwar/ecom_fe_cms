@@ -31,11 +31,7 @@ const BrandFormDTO = yup.object({
 
 const BrandEditPage = () => {
   const {
-    handleSubmit,
-    control,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<FieldType>({
+    handleSubmit, control, formState: { errors, isSubmitting }, reset, } = useForm<FieldType>({
     resolver: yupResolver(BrandFormDTO),
     defaultValues: {
       name: "",
@@ -56,7 +52,7 @@ const BrandEditPage = () => {
       const response = await brandSvc.getRequest(`/brand/${id}`);
       if (response?.data) {
         const brand = response.data;
-
+        
         // ✅ reset form with fetched data
         reset({
           name: brand.name,
@@ -66,7 +62,7 @@ const BrandEditPage = () => {
 
         // ✅ show existing logo
         if (brand.logo) {
-          setThumbUrl(brand.logo);
+          setThumbUrl(brand.logo.optimizedUrl);
         }
       }
     } catch (error) {
@@ -170,7 +166,7 @@ const BrandEditPage = () => {
             Logo
           </label>
           <div className="w-3/4 flex flex-col">
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-4 justify-between">
               <Controller
                 name="logo"
                 control={control}
