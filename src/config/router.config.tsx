@@ -16,6 +16,9 @@ import BannerEditPage from '../pages/banners/BannerEditPage';
 import BrandListingPage from '../pages/brands/BrandListingPage';
 import BrandCreatePage from '../pages/brands/BrandCreatePage';
 import BrandEditPage from '../pages/brands/BrandEditPage';
+import CategoryListingPage from '../pages/categories/CategoryListingPage';
+import CategoryCreatePage from '../pages/categories/CategoryCreatePage';
+import CategoryEditPage from '../pages/categories/CategoryEditPage';
 
 
 const RoutConfig = createBrowserRouter([
@@ -57,6 +60,12 @@ const RoutConfig = createBrowserRouter([
             {path: 'brands', element: <BrandListingPage /> },
             {path: 'brands/create', element: <BrandCreatePage /> },
             {path: 'brand/:id', element: <BrandEditPage /> },
+
+            // categories
+            {path: 'categories', element: <CategoryListingPage /> },
+            {path: 'categories/create', element: <CategoryCreatePage /> },
+            {path: 'categories/:id', element: <CategoryEditPage /> },
+
 
             // page not found
             {path: '*', element: <PageNotFound /> }
