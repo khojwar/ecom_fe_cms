@@ -35,12 +35,13 @@ export interface IBrand {
 
 
 const BrandListingPage = () => {
-const [data, setData] = useState<IBrand[]>([]);
-const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
-const [brandSearch] = useState<string>("");
-const [loading, setLoading] = useState<boolean>(true);
+    const [data, setData] = useState<IBrand[]>([]);
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+    const [brandSearch] = useState<string>("");
+    const [search, setSearch] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(true);
 
-const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const onDeleteConfirm = async (brandId: string) => {
       setLoading(true);
@@ -190,6 +191,11 @@ const navigate = useNavigate();
                 placeholder="Search"
                 variant="filled"
                 className="w-full sm:w-60"
+                onSearch={(value) => {
+                    getBrandList({ page: paginationDefault.page, limit: pagination.pageSize, search: value ?? null });
+                }}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 />
                 <Button
                 icon={<PlusOutlined />}

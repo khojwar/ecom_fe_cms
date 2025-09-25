@@ -43,6 +43,12 @@ export interface ICategory {
     createdBy: IUser
 }
 
+export interface getCategoryProps {
+  page?: number; 
+  limit?: number; 
+  search?: string | null
+}
+
 const CategoryListingPage = () => {
 const [data, setData] = useState<ICategory[]>([]);
 const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
@@ -167,7 +173,7 @@ const navigate = useNavigate();
 
     // dynamic data using API call
     
-    const getCategoryList = async ({page = paginationDefault.page, limit = paginationDefault.limit, search = null}: {page?: number; limit?: number; search?: string | null}): Promise<void> => {
+    const getCategoryList = async ({page = paginationDefault.page, limit = paginationDefault.limit, search = null}: getCategoryProps): Promise<void> => {
       setLoading(true);
       try {
         const response = await categorySvc.getRequest('/category', { 
