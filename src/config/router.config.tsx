@@ -19,6 +19,9 @@ import BrandEditPage from '../pages/brands/BrandEditPage';
 import CategoryListingPage from '../pages/categories/CategoryListingPage';
 import CategoryCreatePage from '../pages/categories/CategoryCreatePage';
 import CategoryEditPage from '../pages/categories/CategoryEditPage';
+import UserListingPage from '../pages/users/UserListingPage';
+import UserCreatePage from '../pages/users/UserCreatePage';
+import UserEditPage from '../pages/users/UserEditPage';
 
 
 const RoutConfig = createBrowserRouter([
@@ -66,6 +69,10 @@ const RoutConfig = createBrowserRouter([
             {path: 'categories/create', element: <CategoryCreatePage /> },
             {path: 'categories/:id', element: <CategoryEditPage /> },
 
+            // Users
+            {path: 'users', element: <UserListingPage /> },
+            {path: 'users/create', element: <UserCreatePage /> },
+            {path: 'users/:id', element: <UserEditPage /> },
 
             // page not found
             {path: '*', element: <PageNotFound /> }
