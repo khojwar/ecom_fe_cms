@@ -6,6 +6,7 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router";
 import { categorySvc } from "../../services/category.serviece";
+import { brandSvc } from "../../services/brand.service";
 
 
 export type categoryStatus = "active" | "inactive";
@@ -37,6 +38,8 @@ const CategoryEditPage = () => {
   });
 
   const [thumbUrl, setThumbUrl] = useState<string>("https://placehold.co/300x100");
+  const [categories, setCategories] = useState<any[]>([]);
+  const [brands, setBrands] = useState<any[]>([]);
 
   const navigate = useNavigate();
 
@@ -49,14 +52,15 @@ const CategoryEditPage = () => {
         name: category.name,
         status: category.status,
         icon: null,
-        parentId: category.parentId,
+        parentId: category.parentId ? (typeof category.parentId === 'object' ? category.parentId._id : category.parentId) : null,
         showInMenu: category.showInMenu,
         homeFeature: category.homeFeature,
-        brands: category.brands,
+        brands: category.brands ? (Array.isArray(category.brands) && category.brands.length > 0 && typeof category.brands[0] === 'object' ? category.brands.map((b: any) => b._id) : category.brands) : [],
       });
 
       if (category.icon) {
-        setThumbUrl(category.logo.optimizedUrl || category.logo.url);
+        const iconUrl = typeof category.icon === 'object' ? (category.icon.optimizedUrl || category.icon.url) : category.icon;
+        setThumbUrl(iconUrl);
       }
 
     } catch (exception) {
@@ -68,25 +72,59 @@ const CategoryEditPage = () => {
 
   useEffect(() => {
     getCategory();
+
+    const fetchCategories = async () => {
+      try {
+        const res = await categorySvc.getRequest('/category');
+        setCategories(res.data);
+      } catch (e) {
+        // Optional: toast for error
+      }
+    };
+
+    const fetchBrands = async () => {
+      try {
+        const res = await brandSvc.getRequest('/brand');
+        setBrands(res.data);
+      } catch (e) {
+        // Optional: toast for error
+      }
+    };
+
+    fetchCategories();
+    fetchBrands();
   }, []);
 
 
   const categoryFormSubmit: SubmitHandler<FieldType> = async (data) => {
-      // console.log("Form Data Submitted: ", data);
       try {
-        await categorySvc.putRequest('/category', data, {
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('status', data.status);
+        if (data.icon) {
+          formData.append('icon', data.icon);
+        }
+        if (data.parentId) {
+          formData.append('parentId', data.parentId);
+        }
+        formData.append('showInMenu', data.showInMenu ? 'true' : 'false');
+        formData.append('homeFeature', data.homeFeature ? 'true' : 'false');
+        if (data.brands && data.brands.length > 0) {
+          formData.append('brands', JSON.stringify(data.brands));
+        }
+
+        await categorySvc.putRequest('/category/' + id, formData, {
           headers: { 'content-Type': 'multipart/form-data' }
         });
 
-        toast.success("Category created successfully!", {
-          description: "The new category has been added.",
+        toast.success("Category updated successfully!", {
+          description: "The category details have been updated.",
         });
 
-        // Reset form or redirect user
         navigate('/admin/categories');
 
       } catch (exception) {
-        toast.error("An error occurred while creating the category.", {
+        toast.error("An error occurred while updating the category.", {
           description: "Please try again later.",
         });
       }
@@ -177,12 +215,11 @@ const CategoryEditPage = () => {
                   onChange={(val) => field.onChange(val)}
                   placeholder="Select parent category"
                 >
-                  {/* Map through available categories to create options */}
-                  {/* {categories.map((category) => (
+                  {categories.filter(cat => cat._id !== id).map((category) => (
                     <Select.Option key={category._id} value={category._id}>
                       {category.name}
                     </Select.Option>
-                  ))} */}
+                  ))}
 
                 </Select>
               )}
@@ -241,12 +278,11 @@ const CategoryEditPage = () => {
                   onChange={(val) => field.onChange(val)}
                   placeholder="Select brands"
                 >
-                  {/* Map through available brands to create options */}
-                  {/* {brands.map((brand) => (
+                  {brands.map((brand) => (
                     <Select.Option key={brand._id} value={brand._id}>
                       {brand.name}
                     </Select.Option>
-                  ))} */}
+                  ))}
                 </Select>
               )}
             />
@@ -268,8 +304,8 @@ const CategoryEditPage = () => {
           <Button
             type="primary"
             htmlType="submit"
-            disabled={isSubmitting}
-            className="flex-1! bg-teal-900! text-white! disabled:opacity-50! hover:bg-teal-950!"
+            loading={isSubmitting}
+            className="flex-1! bg-teal-900! text-white! hover:bg-teal-950!"
           >
             Update Category
           </Button>
