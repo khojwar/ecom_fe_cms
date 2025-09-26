@@ -32,13 +32,20 @@ export interface IUser {
   status: UserStatus
 }
 
+export interface IParentId {
+          _id: string;
+          name: string;
+          slug: string;
+          status: string;
+        }
+
 // ✅ Category type
 export interface ICategory {
     _id: string
     name: string
     slug: string
     status: CategoryStatus
-    parentId: object | null
+    parentId: IParentId | null
     brands: IBrand[]
     createdBy: IUser
 }
@@ -106,7 +113,7 @@ const navigate = useNavigate();
         title: "ParentId",
         dataIndex: "parentId",
         key: "parentId",
-        render: (_: any, record: ICategory) => record.parentId ? record.parentId : 'N/A',
+        render: (_: any, record: ICategory) => record.parentId ? record.parentId.name : 'N/A',
       },
       {        
         title: "Brands",

@@ -107,10 +107,8 @@ const CategoryEditPage = () => {
         if (data.parentId) {
           formData.append('parentId', data.parentId);
         }
-        formData.append('showInMenu', data.showInMenu ? 'true' : 'false');
-        formData.append('homeFeature', data.homeFeature ? 'true' : 'false');
         if (data.brands && data.brands.length > 0) {
-          formData.append('brands', JSON.stringify(data.brands));
+          data.brands.forEach(brand => formData.append('brands', brand));
         }
 
         await categorySvc.putRequest('/category/' + id, formData, {
@@ -124,6 +122,8 @@ const CategoryEditPage = () => {
         navigate('/admin/categories');
 
       } catch (exception) {
+        console.log("exception: ",exception);
+        
         toast.error("An error occurred while updating the category.", {
           description: "Please try again later.",
         });
