@@ -1,0 +1,3 @@
+- Update getProductList to pass page, limit, and search as query params in the API request.
+- Uncomment and fix the Table pagination onChange to call getProductList with new page and pageSize.
+- After searching, update pagination.current to 1.

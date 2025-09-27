@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { productSvc } from "../../services/product.service";
 import { toast } from "sonner";
+import { paginationDefault } from "../../config/constants";
 
 
 // Attribute key-value pair
@@ -58,6 +59,13 @@ export interface DataType {
   updatedBy: string;
 }
 
+export interface getProductListProps {
+  page?: number; 
+  limit?: number; 
+  search?: string | null
+}
+
+
 const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
   const [expanded, setExpanded] = useState(false);
   const shouldTruncate = text.length > 100;
@@ -76,14 +84,37 @@ const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
 
 
 
-
 const ProductListingPage = () => {
     const [search, setSearch] = useState<string>('');
     const [data, setData] = useState<DataType[]>([]);
-    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+    const [pagination, setPagination] = useState({ current: paginationDefault.page, pageSize: paginationDefault.limit, total: paginationDefault.total });
     const [loading, setLoading] = useState<boolean>(false);
 
     const navigate = useNavigate();
+
+    const onDeleteConfirm = async (categoryId: string) => {
+          setLoading(true);
+           try {
+            const response = await productSvc.deleteRequest(`/category/${categoryId}`);
+            if(response?.data) {
+                toast.success('Category deleted successfully!', {
+                  description: "The category has been removed from the listing.",
+                });
+                // Refresh the category list after deletion
+                getProductList({ page: pagination.current, limit: pagination.pageSize, search: search ?? null });
+            }
+            
+    
+           } catch (exception) {
+              toast.error('Failed to delete the category. Please try again.', {
+                description: "If the problem persists, contact support.",
+              });
+           } finally {
+            setLoading(false);
+           }
+            
+    
+        };
 
     const columns: TableProps<DataType>['columns'] = [
       {
@@ -193,9 +224,9 @@ const ProductListingPage = () => {
                         <Popconfirm
                           title="Are you sure?"
                           description="Once deleted, you will not be able to recover this category!"
-                          // onConfirm={() => {
-                          //   onDeleteConfirm(val);
-                          // }}
+                          onConfirm={() => {
+                            onDeleteConfirm(val);
+                          }}
                           okText="Confirm!"
                           showCancel={false}
                         >
@@ -207,12 +238,12 @@ const ProductListingPage = () => {
       },
     ];
 
-    const getProductList = async () => {
+    const getProductList = async ({page = paginationDefault.page, limit = paginationDefault.limit, search = null}: getProductListProps): Promise<void>  => {
         setLoading(true);
         try {
-            const response = await productSvc.getRequest('/product');
+            const response = await productSvc.getRequest('/product', { params: { page, limit, ...(search && { search }) } });
             console.log(response.data);
-            
+
             if(response?.data) {
                 setData(response.data);
             }
@@ -234,7 +265,7 @@ const ProductListingPage = () => {
     };
 
     useEffect(() => {
-        getProductList();
+        getProductList({ page: paginationDefault.page, limit: paginationDefault.limit, search: search ?? null });
     }, []);
 
   return (
@@ -251,7 +282,7 @@ const ProductListingPage = () => {
                 className="w-full sm:w-60"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                // onSearch={(value) => getCategoryList({ page: 1, limit: pagination.pageSize, search: value })}
+                onSearch={async (value) => { await getProductList({ page: 1, limit: pagination.pageSize, search: value }); setPagination(prev => ({ ...prev, current: 1 })); }}
                 />
                 <Button
                 icon={<PlusOutlined />}
@@ -268,10 +299,10 @@ const ProductListingPage = () => {
         dataSource={data} 
         scroll={{ x: true }} 
         pagination={{
-                position: ["bottomCenter"], 
+                position: ["bottomCenter"],
                 ...pagination,
                 onChange: (page, pageSize) => {
-                    // getProductList({page: page, limit: pageSize});
+                    getProductList({page: page, limit: pageSize, search: search ?? null});
                 }
             }}
             loading={loading}
