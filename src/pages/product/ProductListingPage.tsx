@@ -68,8 +68,8 @@ export interface getProductListProps {
 
 const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
   const [expanded, setExpanded] = useState(false);
-  const shouldTruncate = text.length > 100;
-  const displayText = expanded || !shouldTruncate ? text : text.substring(0, 100) + '...';
+  const shouldTruncate = text.length > 20;
+  const displayText = expanded || !shouldTruncate ? text : text.substring(0, 20) + '...';
   return (
     <div>
       {displayText}
@@ -92,28 +92,28 @@ const ProductListingPage = () => {
 
     const navigate = useNavigate();
 
-    const onDeleteConfirm = async (categoryId: string) => {
+    const onDeleteConfirm = async (productId: string) => {
           setLoading(true);
            try {
-            const response = await productSvc.deleteRequest(`/category/${categoryId}`);
+            const response = await productSvc.deleteRequest(`/product/${productId}`);
             if(response?.data) {
-                toast.success('Category deleted successfully!', {
-                  description: "The category has been removed from the listing.",
+                toast.success('Product deleted successfully!', {
+                  description: "The product has been removed from the listing.",
                 });
-                // Refresh the category list after deletion
+                // Refresh the product list after deletion
                 getProductList({ page: pagination.current, limit: pagination.pageSize, search: search ?? null });
             }
-            
-    
+
+
            } catch (exception) {
-              toast.error('Failed to delete the category. Please try again.', {
+              toast.error('Failed to delete the product. Please try again.', {
                 description: "If the problem persists, contact support.",
               });
            } finally {
             setLoading(false);
            }
-            
-    
+
+
         };
 
     const columns: TableProps<DataType>['columns'] = [
@@ -217,13 +217,14 @@ const ProductListingPage = () => {
       {
         title: 'Action',
         key: 'action',
+        dataIndex: '_id',
         render: (val: string) => (
                   <div className="flex gap-4">
                     <Button shape="circle" icon={<EditOutlined />} onClick={() => navigate(`/admin/categories/${val}`)} className="bg-teal-700! text-white! p-5!" />
                     <Space size="middle">
                         <Popconfirm
                           title="Are you sure?"
-                          description="Once deleted, you will not be able to recover this category!"
+                          description="Once deleted, you will not be able to recover this product!"
                           onConfirm={() => {
                             onDeleteConfirm(val);
                           }}
