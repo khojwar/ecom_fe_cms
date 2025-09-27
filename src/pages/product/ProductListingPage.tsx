@@ -1,8 +1,9 @@
 import React from "react";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+// import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Input, Popconfirm, Space, Table, Tag, type TableProps } from "antd";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 import { productSvc } from "../../services/product.service";
 import { toast } from "sonner";
 import { paginationDefault } from "../../config/constants";
@@ -37,7 +38,7 @@ interface Category {
 
 // ---------- Main Product Interface ----------
 
-export interface DataType {
+export interface IProduct {
   _id: string;
   name: string;
   slug: string;
@@ -86,11 +87,11 @@ const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
 
 const ProductListingPage = () => {
     const [search, setSearch] = useState<string>('');
-    const [data, setData] = useState<DataType[]>([]);
+    const [data, setData] = useState<IProduct[]>([]);
     const [pagination, setPagination] = useState({ current: paginationDefault.page, pageSize: paginationDefault.limit, total: paginationDefault.total });
     const [loading, setLoading] = useState<boolean>(false);
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const onDeleteConfirm = async (productId: string) => {
           setLoading(true);
@@ -116,7 +117,7 @@ const ProductListingPage = () => {
 
         };
 
-    const columns: TableProps<DataType>['columns'] = [
+    const columns: TableProps<IProduct>['columns'] = [
       {
         title: 'Name',
         dataIndex: 'name',
@@ -155,9 +156,10 @@ const ProductListingPage = () => {
         title: 'Price',
         key: 'price',
         dataIndex: 'price',
+        render: (price: string) => ( `NPR ${ (parseInt(price) / 100).toFixed(2) }`  ),
       },
       {
-        title: 'Discount',
+        title: 'Discount ( % )',
         key: 'discount',
         dataIndex: 'discount',
       },
@@ -165,8 +167,13 @@ const ProductListingPage = () => {
         title: 'After Discount',
         key: 'afterDiscount',
         dataIndex: 'afterDiscount',
+        render: (afterDiscount: string) => ( `NPR ${ (parseInt(afterDiscount) / 100).toFixed(2) }`  ),
       },
-      {title: 'Tag', key: 'tag', dataIndex: 'tag' },
+      {
+        title: 'Tag',
+        key: 'tag',
+        dataIndex: 'tag'
+      },
       {
         title: 'Stock',
         key: 'stock',
@@ -181,6 +188,11 @@ const ProductListingPage = () => {
         title: 'Status',
         key: 'status',
         dataIndex: 'status',
+        render: (status: string) => (
+          <span className={`px-4! py-2! rounded-full! ${status === 'active' ? 'bg-green-200! text-green-700!' : 'bg-red-200! text-red-700!'}`}>
+            {status.charAt(0).toUpperCase() + status.slice(1)}
+          </span>
+        ),
       },    
       {
         title: 'Seller',
@@ -195,7 +207,7 @@ const ProductListingPage = () => {
           <>
             {categories && categories.length > 0 ? (
                 categories.map((cat) => (
-                    <Tag key={cat._id} color="blue" className="mb-1">{cat.name}</Tag>
+                    <Tag key={cat._id} className="px-4! py-2! rounded-full! shadow-2xl!" >{cat.name}</Tag>
                 ))
             ) : (
                 <span>N/A</span>
@@ -220,7 +232,7 @@ const ProductListingPage = () => {
         dataIndex: '_id',
         render: (val: string) => (
                   <div className="flex gap-4">
-                    <Button shape="circle" icon={<EditOutlined />} onClick={() => navigate(`/admin/categories/${val}`)} className="bg-teal-700! text-white! p-5!" />
+                    {/* <Button shape="circle" icon={<EditOutlined />} onClick={() => navigate(`/admin/categories/${val}`)} className="bg-teal-700! text-white! p-5!" /> */}
                     <Space size="middle">
                         <Popconfirm
                           title="Are you sure?"
@@ -283,19 +295,21 @@ const ProductListingPage = () => {
                 className="w-full sm:w-60"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                onSearch={async (value) => { await getProductList({ page: 1, limit: pagination.pageSize, search: value }); setPagination(prev => ({ ...prev, current: 1 })); }}
+                onSearch={ async (value) => { await getProductList({ page: 1, limit: pagination.pageSize, search: value }); setPagination(prev => ({ ...prev, current: 1 })); }}
                 />
-                <Button
+                {/* <Button
                 icon={<PlusOutlined />}
                 size="middle"
                 className="bg-teal-900! text-white! hover:bg-teal-700! w-full sm:w-auto"
                 onClick={() => navigate('/admin/products/create')}
                 >
                 Add Product
-                </Button>
+                </Button> */}
             </div>
         </div>
-        <Table<DataType> 
+
+
+        <Table<IProduct> 
         columns={columns} 
         dataSource={data} 
         scroll={{ x: true }} 
