@@ -20,8 +20,11 @@ import CategoryListingPage from '../pages/categories/CategoryListingPage';
 import CategoryCreatePage from '../pages/categories/CategoryCreatePage';
 import CategoryEditPage from '../pages/categories/CategoryEditPage';
 import UserListingPage from '../pages/users/UserListingPage';
-import UserCreatePage from '../pages/users/UserCreatePage';
-import UserEditPage from '../pages/users/UserEditPage';
+import ProductListingPage from '../pages/product/ProductListingPage';
+import ProductCreatePage from '../pages/product/ProductCreatePage';
+import ProductEditPage from '../pages/product/ProductEditPage';
+// import UserCreatePage from '../pages/users/UserCreatePage';
+// import UserEditPage from '../pages/users/UserEditPage';
 
 
 const RoutConfig = createBrowserRouter([
@@ -71,8 +74,13 @@ const RoutConfig = createBrowserRouter([
 
             // Users
             {path: 'users', element: <UserListingPage /> },
-            {path: 'users/create', element: <UserCreatePage /> },
-            {path: 'users/:id', element: <UserEditPage /> },
+            // {path: 'users/create', element: <UserCreatePage /> },
+            // {path: 'users/:id', element: <UserEditPage /> },
+
+            // products
+            {path: 'products', element: <ProductListingPage /> },
+            {path: 'products/create', element: <ProductCreatePage /> },
+            {path: 'products/:id', element: <ProductEditPage /> },
 
             // page not found
             {path: '*', element: <PageNotFound /> }

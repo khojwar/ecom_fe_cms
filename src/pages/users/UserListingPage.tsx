@@ -1,10 +1,11 @@
 
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons"
+// import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons"
+import { DeleteOutlined } from "@ant-design/icons"
 import { Button, Input, Popconfirm, Space, Table,  type TableProps } from "antd"
 import { useEffect, useState } from "react";
 import { paginationDefault } from "../../config/constants";
 import { toast } from "sonner";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 import { userSvc } from "../../services/user.service";
 
 // ✅ Enums for fixed values
@@ -57,7 +58,7 @@ const UserListingPage = () => {
     const [search, setSearch] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const onDeleteConfirm = async (userId: string) => {
       setLoading(true);
@@ -148,7 +149,7 @@ const UserListingPage = () => {
         dataIndex: "_id",
         render: (val: string) => (
           <div className="flex gap-4">
-            <Button shape="circle" icon={<EditOutlined />} onClick={() => navigate(`/admin/users/${val}`)} className="bg-teal-700! text-white! p-5!" />
+            {/* <Button shape="circle" icon={<EditOutlined />} onClick={() => navigate(`/admin/users/${val}`)} className="bg-teal-700! text-white! p-5!" /> */}
             <Space size="middle">
                 <Popconfirm
                   title="Are you sure?"
@@ -222,14 +223,14 @@ const UserListingPage = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 />
-                <Button
+                {/* <Button
                 icon={<PlusOutlined />}
                 size="middle"
                 className="bg-teal-900! text-white! hover:bg-teal-700! w-full sm:w-auto"
                 onClick={() => navigate('/admin/users/create')}
                 >
                 Add User
-                </Button>
+                </Button> */}
             </div>
         </div>
 
