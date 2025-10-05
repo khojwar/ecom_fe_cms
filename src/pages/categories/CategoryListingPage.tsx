@@ -76,7 +76,6 @@ const navigate = useNavigate();
             getCategoryList({ page: pagination.current, limit: pagination.pageSize, search: search ?? null });
         }
         
-
        } catch (exception) {
           toast.error('Failed to delete the category. Please try again.', {
             description: "If the problem persists, contact support.",

@@ -1,0 +1,2 @@
+- [x] Update router.config.tsx to change route path from 'orders/:id' to 'orders/:orderCode'
+- [x] Update OrderListingPage.tsx to change navigation onClick to use record.code instead of val (_id)

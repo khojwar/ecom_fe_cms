@@ -23,6 +23,8 @@ import UserListingPage from '../pages/users/UserListingPage';
 import ProductListingPage from '../pages/product/ProductListingPage';
 import ProductCreatePage from '../pages/product/ProductCreatePage';
 import ProductEditPage from '../pages/product/ProductEditPage';
+import OrderListingPage from '../pages/order/OrderListingPage';
+import OrderViewPage from '../pages/order/OrderViewPage';
 // import UserCreatePage from '../pages/users/UserCreatePage';
 // import UserEditPage from '../pages/users/UserEditPage';
 
@@ -81,6 +83,11 @@ const RoutConfig = createBrowserRouter([
             {path: 'products', element: <ProductListingPage /> },
             {path: 'products/create', element: <ProductCreatePage /> },
             {path: 'products/:id', element: <ProductEditPage /> },
+
+            // orders
+            {path: 'orders', element: <OrderListingPage /> },
+            {path: 'orders/:id', element: <OrderViewPage /> },
+
 
             // page not found
             {path: '*', element: <PageNotFound /> }

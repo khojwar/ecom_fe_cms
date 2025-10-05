@@ -7,6 +7,8 @@ export const axiosInstance = axios.create({
   timeoutErrorMessage: "Request timed out. Please try again.",
   headers: {
     "Content-Type": "application/json",
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache",
   },
 });
 

@@ -80,8 +80,6 @@ const UserListingPage = () => {
        } finally {
         setLoading(false);
        }
-        
-
     };
 
     const columns: TableProps<IUser>["columns"] = [
