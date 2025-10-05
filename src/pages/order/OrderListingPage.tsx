@@ -119,13 +119,29 @@ const columns = [
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
-    render: (status: orderStatus) => status.toUpperCase(),
+    render: (status: orderStatus) => {
+      const statusClasses = {
+        pending: 'bg-yellow-500/20 text-yellow-700',
+        confirmed: 'bg-blue-500/20 text-blue-700',
+        shipped: 'bg-purple-500/20 text-purple-700',
+        delivered: 'bg-green-500/20 text-green-700',
+        cancelled: 'bg-red-500/20 text-red-700',
+      };
+
+      return (
+        <div
+          className={`px-4 py-1.5 rounded-full text-white text-sm text-center ${statusClasses[status]}`}
+        >
+          {status}
+        </div>
+      );
+    },
   },
-    {
+  {
     title: 'Paid',
     dataIndex: 'isPaid',
     key: 'isPaid',
-    render: (isPaid: boolean) => (isPaid ? "Paid" : "Unpaid"),
+    render: (isPaid: boolean) => (isPaid ? "Yes" : "No"),
   }, 
   {
     title: 'Created At',
