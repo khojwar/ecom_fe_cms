@@ -193,7 +193,10 @@ const AdminDashboard = () => {
   const [productData, setProductData] = useState<IProduct[]>([]);
   const [userData, setUserData] = useState<IUser[]>([]);
   const [chartData, setChartData] = useState<{ date: string; value: number }[]>([])
-  
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
+  };
 
   const { loggedInUser } = useAuth();
 
@@ -329,7 +332,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <StatCard title="Revenue" value={`Rs. ${totalRevenue}`} subtitle={`Transactions: ${transactionData.length}`} />
+          <StatCard title="Revenue" value={`Rs. ${formatCurrency(Number(totalRevenue))}`} subtitle={`Transactions: ${transactionData.length}`} />
           <StatCard title="Total Orders" value={orderData.length} subtitle="Placed orders" />
           <StatCard title="Products" value={productData.length} subtitle="Listed items" />
           <StatCard title="Total Users" value={userData.length} subtitle="Active users on platform" />
