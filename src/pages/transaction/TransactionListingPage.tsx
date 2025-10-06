@@ -1,7 +1,5 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Button, Input, Table } from "antd";
+import { Input, Table } from "antd";
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router";
 import { paginationDefault } from "../../config/constants";
 import { toast } from "sonner";
 import { tranctionSvc } from "../../services/transaction.service";
@@ -14,7 +12,6 @@ export interface GetTransactionListProps {
 }
 
 export type orderStatus = 'pending' |'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-
 
 export interface ITransaction {
             _id: string
