@@ -100,7 +100,7 @@ const TransactionListingPage = () => {
             params: { page, limit, search } 
         });
 
-        console.log(response.data);
+        // console.log(response.data);
         
         if(response?.data) {
             setData(response.data);
