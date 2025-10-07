@@ -49,13 +49,13 @@ const TransactionListingPage = () => {
       title: 'Order Code',
       dataIndex: 'order',
       key: 'order',
-      render: (order: any) => (order.code)
+      render: (order: any) => (order?.code ?? '-')
     },
     {
       title: 'Method',
       dataIndex: 'paymentMethod',
       key: 'paymentMethod',
-      render: (method: string) => (method.toUpperCase())
+      render: (method: any) => (method ? String(method).toUpperCase() : '-')
     },
     {
       title: 'Status',
@@ -83,13 +83,16 @@ const TransactionListingPage = () => {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      render: (amount: number) => (`Rs. ${(amount/100).toFixed(2)}`)
+      render: (amount: any) => {
+        const num = Number(amount) || 0;
+        return `Rs. ${(num/100).toFixed(2)}`;
+      }
     },
     {
       title: 'Created At',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (date: string) => new Date(date).toLocaleString(),
+      render: (date: any) => (date ? new Date(date).toLocaleString() : '-'),
     },
   ];
 

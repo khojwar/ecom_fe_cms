@@ -27,15 +27,16 @@ const UserLayout = ({menu, role, sTitle, lTitle} : Readonly<{menu: Array<ImenuIt
             <Sidebar collapsed={collapsed} sTitle={sTitle} lTitle={lTitle} menu={menu} />
 
             {/* Main Layout */}
-            <Layout>
+                <Layout style={{ minHeight: 0 }}>
               <UserHeader collapsed={collapsed} setCollapsed={setCollapsed} colorBgContainer={colorBgContainer} />
 
 
               <Content
                 style={{
                   margin: "24px 16px",
-                  padding: 24,
-                  minHeight: 280,
+                      padding: 24,
+                      minHeight: 0,
+                      overflowY: 'auto',
                   background: colorBgContainer,
                   borderRadius: borderRadiusLG,
                 }}

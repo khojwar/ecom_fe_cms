@@ -510,7 +510,7 @@ const AdminDashboard = () => {
         <div className='p-4 shadow-md rounded-2xl border border-gray-100 my-4'>
           <h1 className='font-bold mb-4'>Recent Orders</h1>
           
-          <Table dataSource={recentOrderData} columns={columns} />
+          <Table dataSource={recentOrderData} columns={columns} pagination={false} />
         </div>
 
         <Drawer
