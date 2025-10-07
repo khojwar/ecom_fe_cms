@@ -310,6 +310,21 @@ const AdminDashboard = () => {
     },
   };
 
+      // Populate top products
+    const topProducts = [
+      {id:1, name:'Wireless Headphones', sold:312},
+      {id:2, name:'Running Shoes', sold:210},
+      {id:3, name:'Smart Watch', sold:190},
+      {id:4, name:'Backpack', sold:150}
+    ];
+
+      // Populate recent activity
+    const activity = [
+      '🧾 Order #A1243 placed by Sanjay',
+      '👤 New customer: Priya Sharma',
+      '📦 Order #A1240 marked shipped',
+    ];
+
 
   return (
     <>
@@ -339,14 +354,39 @@ const AdminDashboard = () => {
         </div>
 
 
-        <div className='flex mt-4'>
-          <div className='w-2/3 p-4'>
+        <div className='flex mt-4 gap-4 '>
+          <div className='w-2/3 p-4 shadow-md rounded-2xl border border-gray-100'>
+              <h1 className='text-xl font-bold'>Sales (Last 7 days)</h1>
               <Line {...config} />;
           </div>
-          <div className='w-1/3'>
+          <div className='w-1/3 shadow-md rounded-2xl border border-gray-100 p-4'>
+                <div>
+                  <h1 className='mb-4 font-bold'>Top Products</h1>
+                    <ul className='flex flex-col'>
+                      {
+                        topProducts.map((tp) => (
+                          <li key={tp.id} className='text-2xl'>{tp.name} - {tp.sold}</li>
+                        ))
+                      }
+                    </ul>
+                  </div>
+
+                  <div className='mt-4'>
+                    <h1 className='mb-4 font-bold'>Recent Activity</h1>
+                    <p className='mb-4'>New user signup and order events appear here</p>
+                    <ul className='flex flex-col gap-4'>
+                      {
+                        activity.map((a, index) => (
+                          <li key={index} className=''>{a}</li>
+                        ))
+                      }
+                    </ul>
+                  </div>
 
           </div>
         </div>
+
+        
 
 
     </>
