@@ -199,6 +199,11 @@ const AdminDashboard = () => {
     return new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
   };
 
+  const truncate = (text: string, max = 30) => {
+    if (!text) return '';
+    return text.length > max ? text.slice(0, max - 1) + '…' : text;
+  };
+
   // const { loggedInUser } = useAuth();
 
 
@@ -329,20 +334,54 @@ const AdminDashboard = () => {
     },
   };
 
-      // Populate top products
-    const topProducts = [
-      {id:1, name:'Wireless Headphones', sold:312},
-      {id:2, name:'Running Shoes', sold:210},
-      {id:3, name:'Smart Watch', sold:190},
-      {id:4, name:'Backpack', sold:150}
-    ];
+    // Populate top products dynamically from productData (use stock as a proxy for popularity)
+    const topProducts = useMemo(() => {
+      return productData
+        .map((p) => ({
+          id: p._id,
+          name: (p as any).title || (p as any).name || p.slug || p._id,
+          sold: Number((p as any).stock) || 0,
+        }))
+        .sort((a, b) => b.sold - a.sold)
+        .slice(0, 3);
+    }, [productData]);
 
-      // Populate recent activity
-    const activity = [
-      '🧾 Order #A1243 placed by Sanjay',
-      '👤 New customer: Priya Sharma',
-      '📦 Order #A1240 marked shipped',
-    ];
+    // Populate recent activity dynamically from recent orders, users and transactions
+    const activity = useMemo(() => {
+      const entries: { ts: number; msg: string }[] = [];
+
+      recentOrderData.forEach((o) => {
+        const ts = o.createdAt ? new Date(o.createdAt).getTime() : 0;
+        const buyerName = (o.buyer && (o.buyer as any).name) || (o as any).buyer || 'Unknown';
+        entries.push({ ts, msg: `🧾 Order ${o.code} placed by ${buyerName}` });
+      });
+
+      // recent users
+      userData
+        .slice()
+        .sort((a, b) => {
+          const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return tb - ta;
+        })
+        .slice(0, 5)
+        .forEach((u) => {
+          const ts = u.createdAt ? new Date(u.createdAt).getTime() : 0;
+          entries.push({ ts, msg: `👤 New customer: ${u.name}` });
+        });
+
+      // transactions
+      transactionData
+        .slice()
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 5)
+        .forEach((t) => {
+          const ts = t.createdAt ? new Date(t.createdAt).getTime() : 0;
+          entries.push({ ts, msg: `💸 Transaction ${t.transactionCode} ${t.status} — Rs. ${t.amount}` });
+        });
+
+      return entries.sort((a, b) => b.ts - a.ts).slice(0, 8).map((e) => e.msg);
+    }, [recentOrderData, userData, transactionData]);
 
     const columns = [
       {
@@ -434,7 +473,10 @@ const AdminDashboard = () => {
                     <ul className='flex flex-col'>
                       {
                         topProducts.map((tp) => (
-                          <li key={tp.id} className='text-2xl'>{tp.name} - {tp.sold}</li>
+                          <li key={tp.id} className='text-lg'>
+                            <span className='font-medium'>{truncate(tp.name, 30)}</span>
+                            <span className='ml-2 text-sm text-gray-500'>- {tp.sold}</span>
+                          </li>
                         ))
                       }
                     </ul>
@@ -445,7 +487,7 @@ const AdminDashboard = () => {
                     <p className='mb-4'>New user signup and order events appear here</p>
                     <ul className='flex flex-col gap-4'>
                       {
-                        activity.map((a, index) => (
+                        activity.slice(0, 3).map((a, index) => (
                           <li key={index} className=''>{a}</li>
                         ))
                       }
