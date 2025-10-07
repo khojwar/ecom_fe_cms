@@ -193,7 +193,9 @@ const AdminDashboard = () => {
   const [orderData, setOrderData] = useState<Iorder[]>([]);
   const [recentOrderData, SetRecentOrderData] = useState<Iorder[]>([])
   const [productData, setProductData] = useState<IProduct[]>([]);
+  const [totalProductStock, setTotalProductStock] = useState<number>(0);
   const [userData, setUserData] = useState<IUser[]>([]);
+  const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
   const [chartData, setChartData] = useState<{ date: string; value: number }[]>([])
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerTitle, setDrawerTitle] = useState<string>('');
@@ -212,15 +214,14 @@ const AdminDashboard = () => {
 
   const getUserList = async (): Promise<void> => {
       try {
-        const response = await userSvc.getRequest('/user');
+    const response = await userSvc.getRequest('/user', { params: { page: 1, limit: 10000 } });
 
         console.log(response.data);
         
-        if(response?.data) {
-            setUserData(response.data);
-        }
-
-        
+        const items = Array.isArray(response?.data) ? response.data : (response?.data?.data ?? []);
+        setUserData(items);
+        const total = response?.options?.pagination?.total ?? (Array.isArray(items) ? items.length : 0);
+        setTotalUsersCount(total);
       } catch (exception) {
         toast.error('Failed to fetch user list. Please try again.', {
           description: "If the problem persists, contact support.",
@@ -230,12 +231,13 @@ const AdminDashboard = () => {
 
   const getProductList = async (): Promise<void>  => {
       try {
-          const response = await productSvc.getRequest('/product');
+          const response = await productSvc.getRequest('/product', { params: { page: 1, limit: 10000 } });
           // console.log("product: ",response.data);
 
-          if(response?.data) {
-              setProductData(response.data);
-          }
+          const items = Array.isArray(response?.data) ? response.data : (response?.data?.data ?? []);
+          setProductData(items);
+          const stockSum = Array.isArray(items) ? items.reduce((s: number, p: any) => s + (Number(p.stock) || 0), 0) : 0;
+          setTotalProductStock(stockSum);
 
       } catch (exception) {
           toast.error('Failed to fetch product list. Please try again.', {
@@ -436,18 +438,17 @@ const AdminDashboard = () => {
       },
     ];
 
-
-
   return (
     <>
-        <div className='flex gap-4 justify-center items-center'>
+        <div className='flex gap-4 justify-between items-center'>
           <Input.Search
             placeholder="search order, product or customers..."
             size='middle'
+            className='w-5/6!'
             value={query}
             onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
           />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-end gap-2 w-1/6">
             <span >Welcome back,</span>
             <span className='bg-blue-700/20 text-blue-700 h-12 w-12 rounded-full flex justify-center items-center font-bold shadow-2xl'>
               {loggedInUser?.name
@@ -461,8 +462,8 @@ const AdminDashboard = () => {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
           <StatCard title="Revenue" value={`Rs. ${formatCurrency(Number(totalRevenue))}`} subtitle={`Transactions: ${transactionData.length}`} />
           <StatCard title="Total Orders" value={orderData.length} subtitle="Placed orders" />
-          <StatCard title="Products" value={productData.length} subtitle="Listed items" />
-          <StatCard title="Total Users" value={userData.length} subtitle="Active users on platform" />
+          <StatCard title="Products" value={totalProductStock} subtitle="Total stock" />
+          <StatCard title="Total Users" value={totalUsersCount} subtitle="Active users on platform" />
         </div>
 
 
