@@ -1,7 +1,8 @@
 
-import { Table } from 'antd';
+import { Table, Input, Drawer, Button, List } from 'antd';
 import { useAuth } from '../../context/auth.context';
 import { useEffect, useMemo, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import StatCard from '../../components/Card';
 import { tranctionSvc } from '../../services/transaction.service';
 import { toast } from 'sonner';
@@ -116,7 +117,7 @@ export interface IProduct {
   category: ICategory[];
   brand: string;
   images: (string | null)[]; // array of image URLs or null
-  createdBy: User;
+  createdBy: IUser;
   updatedBy: string;
 }
 
@@ -194,6 +195,9 @@ const AdminDashboard = () => {
   const [productData, setProductData] = useState<IProduct[]>([]);
   const [userData, setUserData] = useState<IUser[]>([]);
   const [chartData, setChartData] = useState<{ date: string; value: number }[]>([])
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [drawerTitle, setDrawerTitle] = useState<string>('');
+  const [drawerContentType, setDrawerContentType] = useState<'products' | 'activity' | null>(null);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
@@ -204,8 +208,7 @@ const AdminDashboard = () => {
     return text.length > max ? text.slice(0, max - 1) + '…' : text;
   };
 
-  // const { loggedInUser } = useAuth();
-
+  const { loggedInUser } = useAuth();
 
   const getUserList = async (): Promise<void> => {
       try {
@@ -340,7 +343,8 @@ const AdminDashboard = () => {
         .map((p) => ({
           id: p._id,
           name: (p as any).title || (p as any).name || p.slug || p._id,
-          sold: Number((p as any).stock) || 0,
+          // prefer real sales counts if API provides (sold, sales), fall back to stock
+          sold: Number((p as any).sold ?? (p as any).sales ?? (p as any).stock) || 0,
         }))
         .sort((a, b) => b.sold - a.sold)
         .slice(0, 3);
@@ -436,12 +440,12 @@ const AdminDashboard = () => {
 
   return (
     <>
-        {/* <div className='flex gap-4 justify-center items-center'>
+        <div className='flex gap-4 justify-center items-center'>
           <Input.Search
             placeholder="search order, product or customers..."
             size='middle'
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
           />
           <div className="flex items-center gap-2">
             <span >Welcome back,</span>
@@ -452,7 +456,7 @@ const AdminDashboard = () => {
                 .join("")}
             </span>
           </div>
-        </div> */}
+        </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
           <StatCard title="Revenue" value={`Rs. ${formatCurrency(Number(totalRevenue))}`} subtitle={`Transactions: ${transactionData.length}`} />
@@ -480,6 +484,9 @@ const AdminDashboard = () => {
                         ))
                       }
                     </ul>
+                    <div className='mt-3'>
+                      <Button size='small' type='link' onClick={() => { setDrawerTitle('Top Products'); setDrawerContentType('products'); setDrawerVisible(true); }}>See more</Button>
+                    </div>
                   </div>
 
                   <div className='mt-4'>
@@ -492,6 +499,9 @@ const AdminDashboard = () => {
                         ))
                       }
                     </ul>
+                    <div className='mt-3'>
+                      <Button size='small' type='link' onClick={() => { setDrawerTitle('Recent Activity'); setDrawerContentType('activity'); setDrawerVisible(true); }}>See more</Button>
+                    </div>
                   </div>
 
           </div>
@@ -502,6 +512,39 @@ const AdminDashboard = () => {
           
           <Table dataSource={recentOrderData} columns={columns} />
         </div>
+
+        <Drawer
+          title={drawerTitle}
+          placement='right'
+          width={480}
+          onClose={() => setDrawerVisible(false)}
+          open={drawerVisible}
+        >
+          {drawerContentType === 'products' && (
+            <List
+              dataSource={productData.sort((a, b) => (Number((b as any).sold ?? (b as any).sales ?? b.stock) - Number((a as any).sold ?? (a as any).sales ?? a.stock)))}
+              renderItem={(p) => (
+                <List.Item>
+                  <div className='w-full'>
+                    <div className='font-medium'>{(p as any).title || (p as any).name || p.slug}</div>
+                    <div className='text-sm text-gray-500'>Sold: {(p as any).sold ?? (p as any).sales ?? p.stock}</div>
+                  </div>
+                </List.Item>
+              )}
+            />
+          )}
+
+          {drawerContentType === 'activity' && (
+            <List
+              dataSource={activity}
+              renderItem={(item) => (
+                <List.Item>
+                  <div>{item}</div>
+                </List.Item>
+              )}
+            />
+          )}
+        </Drawer>
 
         
 
