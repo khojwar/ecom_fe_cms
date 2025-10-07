@@ -1,5 +1,5 @@
 
-import { Input } from 'antd';
+import { Table } from 'antd';
 import { useAuth } from '../../context/auth.context';
 import { useEffect, useMemo, useState } from 'react';
 import StatCard from '../../components/Card';
@@ -190,6 +190,7 @@ const AdminDashboard = () => {
   const [query, setQuery] = useState<string>("");
   const [transactionData, setTransactionData] = useState<ITransaction[]>([])
   const [orderData, setOrderData] = useState<Iorder[]>([]);
+  const [recentOrderData, SetRecentOrderData] = useState<Iorder[]>([])
   const [productData, setProductData] = useState<IProduct[]>([]);
   const [userData, setUserData] = useState<IUser[]>([]);
   const [chartData, setChartData] = useState<{ date: string; value: number }[]>([])
@@ -198,7 +199,7 @@ const AdminDashboard = () => {
     return new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
   };
 
-  const { loggedInUser } = useAuth();
+  // const { loggedInUser } = useAuth();
 
 
   const getUserList = async (): Promise<void> => {
@@ -250,6 +251,23 @@ const AdminDashboard = () => {
     }
   }
 
+  const getRecentOrders = async (): Promise<void> => {
+  try {
+    const response = await orderSvc.getRequest('/order', { 
+      params: { page: 1, limit: 5, sort: 'desc' } // 👈 requesting 5 latest orders
+    });
+
+    if (response?.data) {
+      SetRecentOrderData(response.data);
+    }
+  } catch (exception) {
+    toast.error("Failed to fetch recent orders.", {
+      description: "If the problem persists, contact support.",
+    });
+  } 
+};
+
+
   const getTransactionList = async (): Promise<void> => {
       try {
         const response = await tranctionSvc.getRequest('/transaction');
@@ -280,6 +298,7 @@ const AdminDashboard = () => {
   useEffect(()=>{
     getTransactionList();
     getOrderList();
+    getRecentOrders();
     getProductList();
     getUserList();
   }, [])
@@ -325,10 +344,60 @@ const AdminDashboard = () => {
       '📦 Order #A1240 marked shipped',
     ];
 
+    const columns = [
+      {
+        title: 'Code',
+        dataIndex: 'code',
+        key: 'code',
+      },
+      {
+        title: 'Buyer',
+        dataIndex: 'buyer',
+        key: 'buyer',
+        render: (buyer: IBuyer) => (buyer.name)
+      },
+      {
+        title: 'Total',
+        dataIndex: 'total',
+        key: 'total',
+        render: (total: number) => (`Rs. ${(total/100).toFixed(2)}`)
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        render: (status: orderStatus) => {
+          const statusClasses = {
+            pending: 'bg-yellow-500/20 text-yellow-700',
+            confirmed: 'bg-blue-500/20 text-blue-700',
+            shipped: 'bg-purple-500/20 text-purple-700',
+            delivered: 'bg-green-500/20 text-green-700',
+            cancelled: 'bg-red-500/20 text-red-700',
+          };
+
+          return (
+            <div
+              className={`px-4 py-1.5 rounded-full text-white text-sm text-center ${statusClasses[status]}`}
+            >
+              {status}
+            </div>
+          );
+        },
+      },
+      
+      {
+        title: 'Date',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        render: (date: string) => new Date(date).toLocaleString(),
+      },
+    ];
+
+
 
   return (
     <>
-        <div className='flex gap-4 justify-center items-center'>
+        {/* <div className='flex gap-4 justify-center items-center'>
           <Input.Search
             placeholder="search order, product or customers..."
             size='middle'
@@ -344,7 +413,7 @@ const AdminDashboard = () => {
                 .join("")}
             </span>
           </div>
-        </div>
+        </div> */}
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
           <StatCard title="Revenue" value={`Rs. ${formatCurrency(Number(totalRevenue))}`} subtitle={`Transactions: ${transactionData.length}`} />
@@ -386,8 +455,13 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        
+        <div className='p-4 shadow-md rounded-2xl border border-gray-100 my-4'>
+          <h1 className='font-bold mb-4'>Recent Orders</h1>
+          
+          <Table dataSource={recentOrderData} columns={columns} />
+        </div>
 
+        
 
     </>
   )
