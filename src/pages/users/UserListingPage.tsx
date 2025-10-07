@@ -136,12 +136,6 @@ const UserListingPage = () => {
         render: (_, record: IUser) => record.image ? <img src={record.image.secureUrl} alt="user image" style={{ width: 50 }} /> : null,
       },
       {
-        title: "Created By",
-        dataIndex: "createdBy",
-        key: "createdBy",
-        render: (_, record: IUser) => record.createdBy?.name || 'N/A',
-      },
-      {
         title: "Action",
         key: "action",
         dataIndex: "_id",

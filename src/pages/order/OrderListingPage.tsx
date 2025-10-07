@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { paginationDefault } from "../../config/constants";
 import orderSvc from "../../services/order.service";
 import { toast } from "sonner";
+import formatCurrency from "../../services/currencyFormat.service";
 
 export interface getOrderProps {
   page?: number; 
@@ -113,7 +114,7 @@ const columns = [
     title: 'Total',
     dataIndex: 'total',
     key: 'total',
-    render: (total: number) => (`Rs. ${(total/100).toFixed(2)}`)
+    render: (total: number) => (`Rs. ${formatCurrency((total/100))}`)
   },
   {
     title: 'Status',

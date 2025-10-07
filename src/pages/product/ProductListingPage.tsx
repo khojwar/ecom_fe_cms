@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { productSvc } from "../../services/product.service";
 import { toast } from "sonner";
 import { paginationDefault } from "../../config/constants";
+import formatCurrency from "../../services/currencyFormat.service";
 
 
 // Attribute key-value pair
@@ -156,7 +157,7 @@ const ProductListingPage = () => {
         title: 'Price',
         key: 'price',
         dataIndex: 'price',
-        render: (price: string) => ( `NPR ${ (parseInt(price) / 100).toFixed(2) }`  ),
+        render: (price: string) => ( `NPR ${ formatCurrency((parseInt(price)) / 100) }`  ),
       },
       {
         title: 'Discount ( % )',

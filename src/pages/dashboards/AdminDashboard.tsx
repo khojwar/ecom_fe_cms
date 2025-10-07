@@ -11,6 +11,7 @@ import { productSvc } from '../../services/product.service';
 import { userSvc } from '../../services/user.service';
 import { Line } from '@ant-design/plots';
 import dayjs from "dayjs";
+import formatCurrency from '../../services/currencyFormat.service';
 
 
 export type orderStatus = 'pending' |'confirmed' | 'shipped' | 'delivered' | 'cancelled';
@@ -201,9 +202,7 @@ const AdminDashboard = () => {
   const [drawerTitle, setDrawerTitle] = useState<string>('');
   const [drawerContentType, setDrawerContentType] = useState<'products' | 'activity' | null>(null);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
-  };
+
 
   const truncate = (text: string, max = 30) => {
     if (!text) return '';

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { paginationDefault } from "../../config/constants";
 import { toast } from "sonner";
 import { tranctionSvc } from "../../services/transaction.service";
+import formatCurrency from "../../services/currencyFormat.service";
 
 
 export interface GetTransactionListProps {
@@ -85,7 +86,7 @@ const TransactionListingPage = () => {
       key: 'amount',
       render: (amount: any) => {
         const num = Number(amount) || 0;
-        return `Rs. ${(num/100).toFixed(2)}`;
+        return `Rs. ${formatCurrency((num/100))}`;
       }
     },
     {
