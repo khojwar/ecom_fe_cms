@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUserLayout } from "../../context/user-layout.context"
-import { Avatar, List } from "antd";
+import { Avatar, Input, List } from "antd";
 import type { ILoggedInUserProfile } from "../../context/auth.context";
 
 
@@ -233,8 +233,9 @@ const ChatPage = () => {
   }, [])
 
   return (
-    <div className="flex w-full h-full">
-      <div className="flex w-3/11 flex-col gap-5 h-full">
+    <div className="flex w-full h-full gap-2">
+      {/* chat list */}
+      <div className="flex w-3/11 flex-col gap-5 h-full bg-gray-100 rounded">
         <div className="flex w-full items-center justify-center h-20 border-b border-b-stone-800/15">
           <h1 className="text-2xl text-teal-800 font-bold ">Your Chat List</h1>
         </div>
@@ -267,6 +268,44 @@ const ChatPage = () => {
           )}
         />
 
+      </div>
+
+      {/* chat box */}
+      <div className="w-9/11 flex flex-col h-full bg-stone-100 shadow rounded">
+          {/* chat header */}
+          <div className="border-b border-b-gray-50 shadow flex gap-5 p-5">
+            <div >
+              <Avatar shape="circle" className="size-25!" src="https://res.cloudinary.com/dmr8kzy5n/image/upload/c_scale,w_500/f_auto,q_auto/v1/api-42/user/qvns9jf4av98dzrf1vvd?_a=BAMClqXy0" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h2 className="text-3xl font-semibold">Tika Ram Khojwar</h2>
+              <p>khojwartikaram@gmail.com</p>
+              <p className="text-sm italic text-gray-400 font-light">admin</p>
+            </div>
+          </div>
+
+          {/* chat */}
+          <div className="flex w-full flex-col gap-3 my-5 px-5 h-full">
+              <div className="flex justify-start w-full">
+                <div className="w-3/5 text-justify flex gap-2">
+                  <div className="pt-6">
+                    <Avatar shape="circle" src="https://res.cloudinary.com/dmr8kzy5n/image/upload/c_scale,w_500/f_auto,q_auto/v1/api-42/user/qvns9jf4av98dzrf1vvd?_a=BAMClqXy0" />
+                  </div>
+                  <p className="bg-blue-700/15 text-blue-700  p-2 rounded-t-lg rounded-br-lg">ui ad molestias expedita tempora, esse pariatur, beatae necessitatibus consectetur corrupti consequuntur aliquam numquam. Quod, magnam debitis?</p>
+                </div>
+              </div>
+              <div className="flex justify-end w-full">
+                <div className="w-3/5 text-justify flex gap-2">
+                  <p className="bg-teal-700/15 text-teal-700 p-2 rounded-t-lg rounded-bl-lg">ui ad molestias expedita tempora, esse pariatur, beatae necessitatibus consectetur corrupti consequuntur aliquam numquam. Quod, magnam debitis?</p>
+                  <div className="pt-6">
+                    <Avatar shape="circle" src="https://res.cloudinary.com/dmr8kzy5n/image/upload/c_scale,w_500/f_auto,q_auto/v1/api-42/user/qvns9jf4av98dzrf1vvd?_a=BAMClqXy0" />
+                  </div>
+                </div>
+              </div>
+          </div>
+
+          {/* chat input */}
+          <Input placeholder="Enter your message here" className="p-3 sticky bottom-0" />
       </div>
     </div>
   )
