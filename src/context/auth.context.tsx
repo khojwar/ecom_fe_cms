@@ -8,18 +8,22 @@ export interface ILoggedInUserProfile {
         name: string;
         email: string;
         role: "admin" | "seller" | "customer";
-        status: "active" | "inactive" | "suspended";
+        status: "active" | "ACTIVE" | "inactive" | "suspended";
         address: {
            billingAddress: string;
            shippingAddress: string;
         };
-        phone: number;
+        phone: string;
         gender: "male" | "female" | "other";
-        dob: Date;
-        image: string;
-        cretedBy: null | string;
-        updtedBy: null | string;
-        createdAt: Date;
+        dob: Date | string | null;
+        image: {
+                secureUrl?: string;
+                publicId?: string;
+                optimizedUrl?: string;
+            };
+        createdBy: null | string;
+        updatedBy: null | string;
+        createdAt: Date | string;
         updatedAt: string;
         deletedAt: string | null;
 };

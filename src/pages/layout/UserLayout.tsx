@@ -1,6 +1,5 @@
 
 import {  Layout, theme } from "antd";
-import { useState } from "react";
 import { Navigate, Outlet} from "react-router";
 import Sidebar from "../../components/sidebar/Sidebar";
 import type { ImenuItems } from "../../config/menu-items";
@@ -12,7 +11,6 @@ import { toast } from "sonner";
 const { Content } = Layout;
 
 const UserLayout = ({menu, role, sTitle, lTitle} : Readonly<{menu: Array<ImenuItems>, role: string, sTitle: string; lTitle: string; }>) => {
-  const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -24,11 +22,11 @@ const UserLayout = ({menu, role, sTitle, lTitle} : Readonly<{menu: Array<ImenuIt
         return (
           <Layout className="h-screen">
             {/* Sidebar */}
-            <Sidebar collapsed={collapsed} sTitle={sTitle} lTitle={lTitle} menu={menu} />
+            <Sidebar  sTitle={sTitle} lTitle={lTitle} menu={menu} />
 
             {/* Main Layout */}
                 <Layout style={{ minHeight: 0 }}>
-              <UserHeader collapsed={collapsed} setCollapsed={setCollapsed} colorBgContainer={colorBgContainer} />
+              <UserHeader colorBgContainer={colorBgContainer} />
 
 
               <Content

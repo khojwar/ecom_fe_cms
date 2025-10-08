@@ -26,6 +26,8 @@ import ProductEditPage from '../pages/product/ProductEditPage';
 import OrderListingPage from '../pages/order/OrderListingPage';
 import OrderViewPage from '../pages/order/OrderViewPage';
 import TransactionListingPage from '../pages/transaction/TransactionListingPage';
+import ChatPage from '../pages/chat/ChatPage';
+import { UserLayoutProvider } from '../context/user-layout.context';
 // import UserCreatePage from '../pages/users/UserCreatePage';
 // import UserEditPage from '../pages/users/UserEditPage';
 
@@ -56,7 +58,7 @@ const RoutConfig = createBrowserRouter([
     },
     {
         path: '/admin',
-        element: <UserLayout role="admin" menu={AdminMenu} sTitle={"ADM"} lTitle={"Admin Panel"} />,
+        element: <UserLayoutProvider> <UserLayout role="admin" menu={AdminMenu} sTitle={"ADM"} lTitle={"Admin Panel"} /> </UserLayoutProvider>,
         children: [
             {index: true, element: <AdminDashboard /> },
 
@@ -92,6 +94,7 @@ const RoutConfig = createBrowserRouter([
             // transaction
             {path: 'transactions', element: <TransactionListingPage />},
 
+            {path: 'chat/', element: <ChatPage /> },
 
             // page not found
             {path: '*', element: <PageNotFound /> }
@@ -99,7 +102,10 @@ const RoutConfig = createBrowserRouter([
     },
     {
         path: '/seller',
-        element: <UserLayout role="seller" menu={SellerMenu} sTitle={"SEL"} lTitle={"Seller Panel"} />
+        element: <UserLayout role="seller" menu={SellerMenu} sTitle={"SEL"} lTitle={"Seller Panel"} />,
+        children: [
+            {path:'chat/', element: <ChatPage />}
+        ]
     },
     {
         // page not found

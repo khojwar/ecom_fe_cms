@@ -1,8 +1,10 @@
 import {  MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import { Button, Layout } from 'antd'
+import { useUserLayout } from '../../context/user-layout.context';
 const { Header} = Layout;
 
-const UserHeader = ({ collapsed, setCollapsed, colorBgContainer } : Readonly<{ collapsed: boolean, setCollapsed: (collapsed: boolean) => void, colorBgContainer: string }>) => {
+const UserHeader = ({ colorBgContainer } : Readonly<{  colorBgContainer: string }>) => {
+  const { collapsed, setCollapsed } = useUserLayout();
   return (
     <div>
         <Header style={{ padding: 0, background: colorBgContainer }}>

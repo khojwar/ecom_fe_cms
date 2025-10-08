@@ -2,10 +2,15 @@ import { Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider'
 import type { ImenuItems } from '../../config/menu-items';
 import { useAuth } from '../../context/auth.context';
+import { useUserLayout } from '../../context/user-layout.context';
 
 
-const Sidebar = ({ collapsed, sTitle, lTitle, menu }: Readonly<{ collapsed: boolean, sTitle: string, lTitle: string, menu: Array<ImenuItems> }>) => {
+
+const Sidebar = ({ sTitle, lTitle, menu }: Readonly<{  sTitle: string, lTitle: string, menu: Array<ImenuItems> }>) => {
   const { loggedInUser } = useAuth();
+
+  const { collapsed} = useUserLayout();
+
 
   return (
     <div>
